@@ -1,0 +1,123 @@
+﻿[
+  {
+    "id": "compra-pass-001",
+    "categoria": "Compra",
+    "prompt": "quero comprar um carro para PCD",
+    "expected": "(comprar|compra|jornada|adquirir)",
+    "intent": "Compra",
+    "entity": "PCD",
+    "response": "Posso iniciar sua jornada de compra para veÃ­culo PCD.",
+    "title": "Compra - cenÃ¡rio positivo 1",
+    "description": "Validar resposta correta para o domÃ­nio Compra.",
+    "priority": "Low",
+    "severity": "Minor",
+    "type": "Exploratory",
+    "tags": [
+      "Compra",
+      "PCD",
+      "Exploratory",
+      "Low"
+    ],
+    "feature": "Jornada de Compra",
+    "requirementId": "REQ-004",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "compra-pass-002",
+    "categoria": "Compra",
+    "prompt": "quero comprar um carro para PCD",
+    "expected": "(comprar|compra|jornada|adquirir)",
+    "intent": "Compra",
+    "entity": "PCD",
+    "response": "Posso iniciar sua jornada de compra para veÃ­culo PCD.",
+    "title": "Compra - cenÃ¡rio positivo 2",
+    "description": "Validar resposta correta para o domÃ­nio Compra.",
+    "priority": "Critical",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "Compra",
+      "PCD",
+      "Smoke",
+      "Critical"
+    ],
+    "feature": "Jornada de Compra",
+    "requirementId": "REQ-005",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "compra-pass-003",
+    "categoria": "Compra",
+    "prompt": "quero comprar um carro para PCD",
+    "expected": "(comprar|compra|jornada|adquirir)",
+    "intent": "Compra",
+    "entity": "PCD",
+    "response": "Posso iniciar sua jornada de compra para veÃ­culo PCD.",
+    "title": "Compra - cenÃ¡rio positivo 3",
+    "description": "Validar resposta correta para o domÃ­nio Compra.",
+    "priority": "High",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Compra",
+      "PCD",
+      "Regression",
+      "High"
+    ],
+    "feature": "Jornada de Compra",
+    "requirementId": "REQ-006",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "compra-fail-002",
+    "categoria": "Compra",
+    "prompt": "cenÃ¡rio negativo para Compra",
+    "expected": "(comprar|compra|jornada|adquirir)",
+    "intent": "Compra",
+    "entity": "PCD",
+    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
+    "title": "Compra - cenÃ¡rio negativo",
+    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio Compra.",
+    "priority": "Medium",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "Compra",
+      "PCD",
+      "Smoke",
+      "Medium",
+      "Negative"
+    ],
+    "feature": "Jornada de Compra",
+    "requirementId": "REQ-032",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "compra-error-002",
+    "categoria": "Compra",
+    "prompt": "cenÃ¡rio com response ausente para Compra",
+    "expected": "(comprar|compra|jornada|adquirir)",
+    "intent": "Compra",
+    "entity": "PCD",
+    "title": "Compra - response ausente",
+    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio Compra.",
+    "priority": "Low",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Compra",
+      "PCD",
+      "Regression",
+      "Low",
+      "MissingResponse"
+    ],
+    "feature": "Jornada de Compra",
+    "requirementId": "REQ-042",
+    "author": "Caio Santos",
+    "version": "1.0"
+  }
+]

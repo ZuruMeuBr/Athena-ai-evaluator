@@ -1,0 +1,118 @@
+﻿[
+  {
+    "id": "lista-pass-001",
+    "categoria": "ListaInteresse",
+    "prompt": "me avise quando chegar Corolla hÃ­brido",
+    "expected": "(lista|interesse|cadastro|adicionar|avise)",
+    "intent": "ListaInteresse",
+    "entity": "Corolla hÃ­brido",
+    "response": "Adicionei seu interesse pelo Corolla hÃ­brido na lista.",
+    "title": "ListaInteresse - cenÃ¡rio positivo 1",
+    "description": "Validar resposta correta para o domÃ­nio ListaInteresse.",
+    "priority": "Medium",
+    "severity": "Major",
+    "type": "Functional",
+    "tags": [
+      "ListaInteresse",
+      "Functional",
+      "Medium"
+    ],
+    "feature": "Lista de Interesse",
+    "requirementId": "REQ-019",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "lista-pass-002",
+    "categoria": "ListaInteresse",
+    "prompt": "me avise quando chegar Corolla hÃ­brido",
+    "expected": "(lista|interesse|cadastro|adicionar|avise)",
+    "intent": "ListaInteresse",
+    "entity": "Corolla hÃ­brido",
+    "response": "Adicionei seu interesse pelo Corolla hÃ­brido na lista.",
+    "title": "ListaInteresse - cenÃ¡rio positivo 2",
+    "description": "Validar resposta correta para o domÃ­nio ListaInteresse.",
+    "priority": "Low",
+    "severity": "Minor",
+    "type": "Exploratory",
+    "tags": [
+      "ListaInteresse",
+      "Exploratory",
+      "Low"
+    ],
+    "feature": "Lista de Interesse",
+    "requirementId": "REQ-020",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "lista-pass-003",
+    "categoria": "ListaInteresse",
+    "prompt": "me avise quando chegar Corolla hÃ­brido",
+    "expected": "(lista|interesse|cadastro|adicionar|avise)",
+    "intent": "ListaInteresse",
+    "entity": "Corolla hÃ­brido",
+    "response": "Adicionei seu interesse pelo Corolla hÃ­brido na lista.",
+    "title": "ListaInteresse - cenÃ¡rio positivo 3",
+    "description": "Validar resposta correta para o domÃ­nio ListaInteresse.",
+    "priority": "Critical",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "ListaInteresse",
+      "Smoke",
+      "Critical"
+    ],
+    "feature": "Lista de Interesse",
+    "requirementId": "REQ-021",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "lista-fail-007",
+    "categoria": "ListaInteresse",
+    "prompt": "cenÃ¡rio negativo para ListaInteresse",
+    "expected": "(lista|interesse|cadastro|adicionar|avise)",
+    "intent": "ListaInteresse",
+    "entity": "Corolla hÃ­brido",
+    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
+    "title": "ListaInteresse - cenÃ¡rio negativo",
+    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio ListaInteresse.",
+    "priority": "Low",
+    "severity": "Blocker",
+    "type": "Exploratory",
+    "tags": [
+      "ListaInteresse",
+      "Exploratory",
+      "Low",
+      "Negative"
+    ],
+    "feature": "Lista de Interesse",
+    "requirementId": "REQ-037",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "lista-error-007",
+    "categoria": "ListaInteresse",
+    "prompt": "cenÃ¡rio com response ausente para ListaInteresse",
+    "expected": "(lista|interesse|cadastro|adicionar|avise)",
+    "intent": "ListaInteresse",
+    "entity": "Corolla hÃ­brido",
+    "title": "ListaInteresse - response ausente",
+    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio ListaInteresse.",
+    "priority": "Critical",
+    "severity": "Blocker",
+    "type": "Functional",
+    "tags": [
+      "ListaInteresse",
+      "Functional",
+      "Critical",
+      "MissingResponse"
+    ],
+    "feature": "Lista de Interesse",
+    "requirementId": "REQ-047",
+    "author": "Caio Santos",
+    "version": "1.0"
+  }
+]

@@ -1,0 +1,123 @@
+﻿[
+  {
+    "id": "ofertas-pass-001",
+    "categoria": "Ofertas",
+    "prompt": "quero ver ofertas de SUV",
+    "expected": "(ofertas|financiamento|condiÃ§Ãµes especiais|desconto)",
+    "intent": "Ofertas",
+    "entity": "SUV",
+    "response": "Temos ofertas para SUV com condiÃ§Ãµes especiais de financiamento.",
+    "title": "Ofertas - cenÃ¡rio positivo 1",
+    "description": "Validar resposta correta para o domÃ­nio Ofertas.",
+    "priority": "Critical",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "Ofertas",
+      "SUV",
+      "Smoke",
+      "Critical"
+    ],
+    "feature": "Jornada de Ofertas",
+    "requirementId": "REQ-001",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "ofertas-pass-002",
+    "categoria": "Ofertas",
+    "prompt": "quero ver ofertas de SUV",
+    "expected": "(ofertas|financiamento|condiÃ§Ãµes especiais|desconto)",
+    "intent": "Ofertas",
+    "entity": "SUV",
+    "response": "Temos ofertas para SUV com condiÃ§Ãµes especiais de financiamento.",
+    "title": "Ofertas - cenÃ¡rio positivo 2",
+    "description": "Validar resposta correta para o domÃ­nio Ofertas.",
+    "priority": "High",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Ofertas",
+      "SUV",
+      "Regression",
+      "High"
+    ],
+    "feature": "Jornada de Ofertas",
+    "requirementId": "REQ-002",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "ofertas-pass-003",
+    "categoria": "Ofertas",
+    "prompt": "quero ver ofertas de SUV",
+    "expected": "(ofertas|financiamento|condiÃ§Ãµes especiais|desconto)",
+    "intent": "Ofertas",
+    "entity": "SUV",
+    "response": "Temos ofertas para SUV com condiÃ§Ãµes especiais de financiamento.",
+    "title": "Ofertas - cenÃ¡rio positivo 3",
+    "description": "Validar resposta correta para o domÃ­nio Ofertas.",
+    "priority": "Medium",
+    "severity": "Major",
+    "type": "Functional",
+    "tags": [
+      "Ofertas",
+      "SUV",
+      "Functional",
+      "Medium"
+    ],
+    "feature": "Jornada de Ofertas",
+    "requirementId": "REQ-003",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "ofertas-fail-001",
+    "categoria": "Ofertas",
+    "prompt": "cenÃ¡rio negativo para Ofertas",
+    "expected": "(ofertas|financiamento|condiÃ§Ãµes especiais|desconto)",
+    "intent": "Ofertas",
+    "entity": "SUV",
+    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
+    "title": "Ofertas - cenÃ¡rio negativo",
+    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio Ofertas.",
+    "priority": "High",
+    "severity": "Minor",
+    "type": "Functional",
+    "tags": [
+      "Ofertas",
+      "SUV",
+      "Functional",
+      "High",
+      "Negative"
+    ],
+    "feature": "Jornada de Ofertas",
+    "requirementId": "REQ-031",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "ofertas-error-001",
+    "categoria": "Ofertas",
+    "prompt": "cenÃ¡rio com response ausente para Ofertas",
+    "expected": "(ofertas|financiamento|condiÃ§Ãµes especiais|desconto)",
+    "intent": "Ofertas",
+    "entity": "SUV",
+    "title": "Ofertas - response ausente",
+    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio Ofertas.",
+    "priority": "Medium",
+    "severity": "Minor",
+    "type": "Smoke",
+    "tags": [
+      "Ofertas",
+      "SUV",
+      "Smoke",
+      "Medium",
+      "MissingResponse"
+    ],
+    "feature": "Jornada de Ofertas",
+    "requirementId": "REQ-041",
+    "author": "Caio Santos",
+    "version": "1.0"
+  }
+]

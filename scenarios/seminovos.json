@@ -1,0 +1,118 @@
+﻿[
+  {
+    "id": "seminovos-pass-001",
+    "categoria": "Seminovos",
+    "prompt": "quero ver carros seminovos",
+    "expected": "(seminovo|seminovos|usados)",
+    "intent": "Seminovos",
+    "entity": "seminovo",
+    "response": "Vou apresentar os veÃ­culos seminovos disponÃ­veis.",
+    "title": "Seminovos - cenÃ¡rio positivo 1",
+    "description": "Validar resposta correta para o domÃ­nio Seminovos.",
+    "priority": "Critical",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "Seminovos",
+      "Smoke",
+      "Critical"
+    ],
+    "feature": "Consulta de Seminovos",
+    "requirementId": "REQ-025",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "seminovos-pass-002",
+    "categoria": "Seminovos",
+    "prompt": "quero ver carros seminovos",
+    "expected": "(seminovo|seminovos|usados)",
+    "intent": "Seminovos",
+    "entity": "seminovo",
+    "response": "Vou apresentar os veÃ­culos seminovos disponÃ­veis.",
+    "title": "Seminovos - cenÃ¡rio positivo 2",
+    "description": "Validar resposta correta para o domÃ­nio Seminovos.",
+    "priority": "High",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Seminovos",
+      "Regression",
+      "High"
+    ],
+    "feature": "Consulta de Seminovos",
+    "requirementId": "REQ-026",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "seminovos-pass-003",
+    "categoria": "Seminovos",
+    "prompt": "quero ver carros seminovos",
+    "expected": "(seminovo|seminovos|usados)",
+    "intent": "Seminovos",
+    "entity": "seminovo",
+    "response": "Vou apresentar os veÃ­culos seminovos disponÃ­veis.",
+    "title": "Seminovos - cenÃ¡rio positivo 3",
+    "description": "Validar resposta correta para o domÃ­nio Seminovos.",
+    "priority": "Medium",
+    "severity": "Major",
+    "type": "Functional",
+    "tags": [
+      "Seminovos",
+      "Functional",
+      "Medium"
+    ],
+    "feature": "Consulta de Seminovos",
+    "requirementId": "REQ-027",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "seminovos-fail-009",
+    "categoria": "Seminovos",
+    "prompt": "cenÃ¡rio negativo para Seminovos",
+    "expected": "(seminovo|seminovos|usados)",
+    "intent": "Seminovos",
+    "entity": "seminovo",
+    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
+    "title": "Seminovos - cenÃ¡rio negativo",
+    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio Seminovos.",
+    "priority": "High",
+    "severity": "Minor",
+    "type": "Functional",
+    "tags": [
+      "Seminovos",
+      "Functional",
+      "High",
+      "Negative"
+    ],
+    "feature": "Consulta de Seminovos",
+    "requirementId": "REQ-039",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "seminovos-error-009",
+    "categoria": "Seminovos",
+    "prompt": "cenÃ¡rio com response ausente para Seminovos",
+    "expected": "(seminovo|seminovos|usados)",
+    "intent": "Seminovos",
+    "entity": "seminovo",
+    "title": "Seminovos - response ausente",
+    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio Seminovos.",
+    "priority": "Medium",
+    "severity": "Minor",
+    "type": "Smoke",
+    "tags": [
+      "Seminovos",
+      "Smoke",
+      "Medium",
+      "MissingResponse"
+    ],
+    "feature": "Consulta de Seminovos",
+    "requirementId": "REQ-049",
+    "author": "Caio Santos",
+    "version": "1.0"
+  }
+]

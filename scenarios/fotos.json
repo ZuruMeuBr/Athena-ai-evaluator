@@ -1,0 +1,118 @@
+﻿[
+  {
+    "id": "fotos-pass-001",
+    "categoria": "Fotos",
+    "prompt": "me envie fotos do Onix",
+    "expected": "(foto|fotos|imagens|galeria)",
+    "intent": "Fotos",
+    "entity": "Onix",
+    "response": "Vou enviar as fotos disponÃ­veis do Onix.",
+    "title": "Fotos - cenÃ¡rio positivo 1",
+    "description": "Validar resposta correta para o domÃ­nio Fotos.",
+    "priority": "Low",
+    "severity": "Minor",
+    "type": "Exploratory",
+    "tags": [
+      "Fotos",
+      "Exploratory",
+      "Low"
+    ],
+    "feature": "Galeria de Imagens",
+    "requirementId": "REQ-016",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "fotos-pass-002",
+    "categoria": "Fotos",
+    "prompt": "me envie fotos do Onix",
+    "expected": "(foto|fotos|imagens|galeria)",
+    "intent": "Fotos",
+    "entity": "Onix",
+    "response": "Vou enviar as fotos disponÃ­veis do Onix.",
+    "title": "Fotos - cenÃ¡rio positivo 2",
+    "description": "Validar resposta correta para o domÃ­nio Fotos.",
+    "priority": "Critical",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "Fotos",
+      "Smoke",
+      "Critical"
+    ],
+    "feature": "Galeria de Imagens",
+    "requirementId": "REQ-017",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "fotos-pass-003",
+    "categoria": "Fotos",
+    "prompt": "me envie fotos do Onix",
+    "expected": "(foto|fotos|imagens|galeria)",
+    "intent": "Fotos",
+    "entity": "Onix",
+    "response": "Vou enviar as fotos disponÃ­veis do Onix.",
+    "title": "Fotos - cenÃ¡rio positivo 3",
+    "description": "Validar resposta correta para o domÃ­nio Fotos.",
+    "priority": "High",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Fotos",
+      "Regression",
+      "High"
+    ],
+    "feature": "Galeria de Imagens",
+    "requirementId": "REQ-018",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "fotos-fail-006",
+    "categoria": "Fotos",
+    "prompt": "cenÃ¡rio negativo para Fotos",
+    "expected": "(foto|fotos|imagens|galeria)",
+    "intent": "Fotos",
+    "entity": "Onix",
+    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
+    "title": "Fotos - cenÃ¡rio negativo",
+    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio Fotos.",
+    "priority": "Medium",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "Fotos",
+      "Smoke",
+      "Medium",
+      "Negative"
+    ],
+    "feature": "Galeria de Imagens",
+    "requirementId": "REQ-036",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "fotos-error-006",
+    "categoria": "Fotos",
+    "prompt": "cenÃ¡rio com response ausente para Fotos",
+    "expected": "(foto|fotos|imagens|galeria)",
+    "intent": "Fotos",
+    "entity": "Onix",
+    "title": "Fotos - response ausente",
+    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio Fotos.",
+    "priority": "Low",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Fotos",
+      "Regression",
+      "Low",
+      "MissingResponse"
+    ],
+    "feature": "Galeria de Imagens",
+    "requirementId": "REQ-046",
+    "author": "Caio Santos",
+    "version": "1.0"
+  }
+]

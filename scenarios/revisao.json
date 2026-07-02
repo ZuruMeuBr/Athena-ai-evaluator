@@ -1,0 +1,118 @@
+﻿[
+  {
+    "id": "revisao-pass-001",
+    "categoria": "Revisao",
+    "prompt": "quero agendar revisÃ£o",
+    "expected": "(revisÃ£o|revisao|manutenÃ§Ã£o|agendamento)",
+    "intent": "Revisao",
+    "entity": "revisÃ£o",
+    "response": "Vamos realizar o agendamento da revisÃ£o do veÃ­culo.",
+    "title": "Revisao - cenÃ¡rio positivo 1",
+    "description": "Validar resposta correta para o domÃ­nio Revisao.",
+    "priority": "Low",
+    "severity": "Minor",
+    "type": "Exploratory",
+    "tags": [
+      "Revisao",
+      "Exploratory",
+      "Low"
+    ],
+    "feature": "RevisÃ£o de VeÃ­culo",
+    "requirementId": "REQ-028",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "revisao-pass-002",
+    "categoria": "Revisao",
+    "prompt": "quero agendar revisÃ£o",
+    "expected": "(revisÃ£o|revisao|manutenÃ§Ã£o|agendamento)",
+    "intent": "Revisao",
+    "entity": "revisÃ£o",
+    "response": "Vamos realizar o agendamento da revisÃ£o do veÃ­culo.",
+    "title": "Revisao - cenÃ¡rio positivo 2",
+    "description": "Validar resposta correta para o domÃ­nio Revisao.",
+    "priority": "Critical",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "Revisao",
+      "Smoke",
+      "Critical"
+    ],
+    "feature": "RevisÃ£o de VeÃ­culo",
+    "requirementId": "REQ-029",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "revisao-pass-003",
+    "categoria": "Revisao",
+    "prompt": "quero agendar revisÃ£o",
+    "expected": "(revisÃ£o|revisao|manutenÃ§Ã£o|agendamento)",
+    "intent": "Revisao",
+    "entity": "revisÃ£o",
+    "response": "Vamos realizar o agendamento da revisÃ£o do veÃ­culo.",
+    "title": "Revisao - cenÃ¡rio positivo 3",
+    "description": "Validar resposta correta para o domÃ­nio Revisao.",
+    "priority": "High",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Revisao",
+      "Regression",
+      "High"
+    ],
+    "feature": "RevisÃ£o de VeÃ­culo",
+    "requirementId": "REQ-030",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "revisao-fail-010",
+    "categoria": "Revisao",
+    "prompt": "cenÃ¡rio negativo para Revisao",
+    "expected": "(revisÃ£o|revisao|manutenÃ§Ã£o|agendamento)",
+    "intent": "Revisao",
+    "entity": "revisÃ£o",
+    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
+    "title": "Revisao - cenÃ¡rio negativo",
+    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio Revisao.",
+    "priority": "Medium",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "Revisao",
+      "Smoke",
+      "Medium",
+      "Negative"
+    ],
+    "feature": "RevisÃ£o de VeÃ­culo",
+    "requirementId": "REQ-040",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "revisao-error-010",
+    "categoria": "Revisao",
+    "prompt": "cenÃ¡rio com response ausente para Revisao",
+    "expected": "(revisÃ£o|revisao|manutenÃ§Ã£o|agendamento)",
+    "intent": "Revisao",
+    "entity": "revisÃ£o",
+    "title": "Revisao - response ausente",
+    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio Revisao.",
+    "priority": "Low",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Revisao",
+      "Regression",
+      "Low",
+      "MissingResponse"
+    ],
+    "feature": "RevisÃ£o de VeÃ­culo",
+    "requirementId": "REQ-050",
+    "author": "Caio Santos",
+    "version": "1.0"
+  }
+]

@@ -1,0 +1,118 @@
+﻿[
+  {
+    "id": "atendimento-pass-001",
+    "categoria": "AtendimentoHumano",
+    "prompt": "quero atendimento humano",
+    "expected": "(atendente|especialista|consultor|humano)",
+    "intent": "AtendimentoHumano",
+    "entity": "Atendente",
+    "response": "Vou transferir vocÃª para um atendente especializado.",
+    "title": "AtendimentoHumano - cenÃ¡rio positivo 1",
+    "description": "Validar resposta correta para o domÃ­nio AtendimentoHumano.",
+    "priority": "Critical",
+    "severity": "Blocker",
+    "type": "Smoke",
+    "tags": [
+      "AtendimentoHumano",
+      "Smoke",
+      "Critical"
+    ],
+    "feature": "Transbordo Humano",
+    "requirementId": "REQ-013",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "atendimento-pass-002",
+    "categoria": "AtendimentoHumano",
+    "prompt": "quero atendimento humano",
+    "expected": "(atendente|especialista|consultor|humano)",
+    "intent": "AtendimentoHumano",
+    "entity": "Atendente",
+    "response": "Vou transferir vocÃª para um atendente especializado.",
+    "title": "AtendimentoHumano - cenÃ¡rio positivo 2",
+    "description": "Validar resposta correta para o domÃ­nio AtendimentoHumano.",
+    "priority": "High",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "AtendimentoHumano",
+      "Regression",
+      "High"
+    ],
+    "feature": "Transbordo Humano",
+    "requirementId": "REQ-014",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "atendimento-pass-003",
+    "categoria": "AtendimentoHumano",
+    "prompt": "quero atendimento humano",
+    "expected": "(atendente|especialista|consultor|humano)",
+    "intent": "AtendimentoHumano",
+    "entity": "Atendente",
+    "response": "Vou transferir vocÃª para um atendente especializado.",
+    "title": "AtendimentoHumano - cenÃ¡rio positivo 3",
+    "description": "Validar resposta correta para o domÃ­nio AtendimentoHumano.",
+    "priority": "Medium",
+    "severity": "Major",
+    "type": "Functional",
+    "tags": [
+      "AtendimentoHumano",
+      "Functional",
+      "Medium"
+    ],
+    "feature": "Transbordo Humano",
+    "requirementId": "REQ-015",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "atendimento-fail-005",
+    "categoria": "AtendimentoHumano",
+    "prompt": "cenÃ¡rio negativo para AtendimentoHumano",
+    "expected": "(atendente|especialista|consultor|humano)",
+    "intent": "AtendimentoHumano",
+    "entity": "Atendente",
+    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
+    "title": "AtendimentoHumano - cenÃ¡rio negativo",
+    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio AtendimentoHumano.",
+    "priority": "High",
+    "severity": "Minor",
+    "type": "Functional",
+    "tags": [
+      "AtendimentoHumano",
+      "Functional",
+      "High",
+      "Negative"
+    ],
+    "feature": "Transbordo Humano",
+    "requirementId": "REQ-035",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "atendimento-error-005",
+    "categoria": "AtendimentoHumano",
+    "prompt": "cenÃ¡rio com response ausente para AtendimentoHumano",
+    "expected": "(atendente|especialista|consultor|humano)",
+    "intent": "AtendimentoHumano",
+    "entity": "Atendente",
+    "title": "AtendimentoHumano - response ausente",
+    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio AtendimentoHumano.",
+    "priority": "Medium",
+    "severity": "Minor",
+    "type": "Smoke",
+    "tags": [
+      "AtendimentoHumano",
+      "Smoke",
+      "Medium",
+      "MissingResponse"
+    ],
+    "feature": "Transbordo Humano",
+    "requirementId": "REQ-045",
+    "author": "Caio Santos",
+    "version": "1.0"
+  }
+]

@@ -1,0 +1,118 @@
+﻿[
+  {
+    "id": "consulta-pass-001",
+    "categoria": "Consulta",
+    "prompt": "qual o status do meu pedido?",
+    "expected": "(consulta|status|pedido)",
+    "intent": "Consulta",
+    "entity": "pedido",
+    "response": "Vou consultar o status do seu pedido.",
+    "title": "Consulta - cenÃ¡rio positivo 1",
+    "description": "Validar resposta correta para o domÃ­nio Consulta.",
+    "priority": "High",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Consulta",
+      "Regression",
+      "High"
+    ],
+    "feature": "Consulta de Pedido",
+    "requirementId": "REQ-010",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "consulta-pass-002",
+    "categoria": "Consulta",
+    "prompt": "qual o status do meu pedido?",
+    "expected": "(consulta|status|pedido)",
+    "intent": "Consulta",
+    "entity": "pedido",
+    "response": "Vou consultar o status do seu pedido.",
+    "title": "Consulta - cenÃ¡rio positivo 2",
+    "description": "Validar resposta correta para o domÃ­nio Consulta.",
+    "priority": "Medium",
+    "severity": "Major",
+    "type": "Functional",
+    "tags": [
+      "Consulta",
+      "Functional",
+      "Medium"
+    ],
+    "feature": "Consulta de Pedido",
+    "requirementId": "REQ-011",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "consulta-pass-003",
+    "categoria": "Consulta",
+    "prompt": "qual o status do meu pedido?",
+    "expected": "(consulta|status|pedido)",
+    "intent": "Consulta",
+    "entity": "pedido",
+    "response": "Vou consultar o status do seu pedido.",
+    "title": "Consulta - cenÃ¡rio positivo 3",
+    "description": "Validar resposta correta para o domÃ­nio Consulta.",
+    "priority": "Low",
+    "severity": "Minor",
+    "type": "Exploratory",
+    "tags": [
+      "Consulta",
+      "Exploratory",
+      "Low"
+    ],
+    "feature": "Consulta de Pedido",
+    "requirementId": "REQ-012",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "consulta-fail-004",
+    "categoria": "Consulta",
+    "prompt": "cenÃ¡rio negativo para Consulta",
+    "expected": "(consulta|status|pedido)",
+    "intent": "Consulta",
+    "entity": "pedido",
+    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
+    "title": "Consulta - cenÃ¡rio negativo",
+    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio Consulta.",
+    "priority": "Critical",
+    "severity": "Major",
+    "type": "Regression",
+    "tags": [
+      "Consulta",
+      "Regression",
+      "Critical",
+      "Negative"
+    ],
+    "feature": "Consulta de Pedido",
+    "requirementId": "REQ-034",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "consulta-error-004",
+    "categoria": "Consulta",
+    "prompt": "cenÃ¡rio com response ausente para Consulta",
+    "expected": "(consulta|status|pedido)",
+    "intent": "Consulta",
+    "entity": "pedido",
+    "title": "Consulta - response ausente",
+    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio Consulta.",
+    "priority": "High",
+    "severity": "Major",
+    "type": "Exploratory",
+    "tags": [
+      "Consulta",
+      "Exploratory",
+      "High",
+      "MissingResponse"
+    ],
+    "feature": "Consulta de Pedido",
+    "requirementId": "REQ-044",
+    "author": "Caio Santos",
+    "version": "1.0"
+  }
+]

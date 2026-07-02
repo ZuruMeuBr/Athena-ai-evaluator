@@ -1,0 +1,37 @@
+{
+  "name": "llm-evaluator",
+  "version": "1.0.0",
+  "description": "Evaluate LLM responses against expected regular expressions.",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/src/index.js",
+    "dev": "ts-node src/index.ts",
+    "test": "jest",
+    "evaluate": "node scripts/evaluate.js",
+    "evaluate:category": "npm run build && node dist/src/index.js --category",
+    "import": "npm run build && node dist/src/import/index.js",
+    "validate:scenarios": "npm run build && node dist/src/validateScenarios.js"
+  },
+  "keywords": [
+    "llm",
+    "evaluation",
+    "typescript",
+    "jest"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "csv-parse": "^7.0.0",
+    "xlsx": "^0.18.5"
+  }
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "invalid-priority-001",
+    "categoria": "Compra",
+    "priority": "Urgent",
+    "prompt": "quero comprar carro",
+    "expected": "compra",
+    "intent": "Compra",
+    "entity": "carro"
+  }
+]

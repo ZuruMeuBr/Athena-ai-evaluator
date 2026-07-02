@@ -1,0 +1,118 @@
+﻿[
+  {
+    "id": "financiamento-pass-001",
+    "categoria": "Financiamento",
+    "prompt": "quero simular financiamento",
+    "expected": "(financiamento|simulaÃ§Ã£o|parcelas|crÃ©dito)",
+    "intent": "Financiamento",
+    "entity": "financiamento",
+    "response": "Posso iniciar a simulaÃ§Ã£o de financiamento.",
+    "title": "Financiamento - cenÃ¡rio positivo 1",
+    "description": "Validar resposta correta para o domÃ­nio Financiamento.",
+    "priority": "High",
+    "severity": "Blocker",
+    "type": "Regression",
+    "tags": [
+      "Financiamento",
+      "Regression",
+      "High"
+    ],
+    "feature": "SimulaÃ§Ã£o de Financiamento",
+    "requirementId": "REQ-022",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "financiamento-pass-002",
+    "categoria": "Financiamento",
+    "prompt": "quero simular financiamento",
+    "expected": "(financiamento|simulaÃ§Ã£o|parcelas|crÃ©dito)",
+    "intent": "Financiamento",
+    "entity": "financiamento",
+    "response": "Posso iniciar a simulaÃ§Ã£o de financiamento.",
+    "title": "Financiamento - cenÃ¡rio positivo 2",
+    "description": "Validar resposta correta para o domÃ­nio Financiamento.",
+    "priority": "Medium",
+    "severity": "Major",
+    "type": "Functional",
+    "tags": [
+      "Financiamento",
+      "Functional",
+      "Medium"
+    ],
+    "feature": "SimulaÃ§Ã£o de Financiamento",
+    "requirementId": "REQ-023",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "financiamento-pass-003",
+    "categoria": "Financiamento",
+    "prompt": "quero simular financiamento",
+    "expected": "(financiamento|simulaÃ§Ã£o|parcelas|crÃ©dito)",
+    "intent": "Financiamento",
+    "entity": "financiamento",
+    "response": "Posso iniciar a simulaÃ§Ã£o de financiamento.",
+    "title": "Financiamento - cenÃ¡rio positivo 3",
+    "description": "Validar resposta correta para o domÃ­nio Financiamento.",
+    "priority": "Low",
+    "severity": "Minor",
+    "type": "Exploratory",
+    "tags": [
+      "Financiamento",
+      "Exploratory",
+      "Low"
+    ],
+    "feature": "SimulaÃ§Ã£o de Financiamento",
+    "requirementId": "REQ-024",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "financiamento-fail-008",
+    "categoria": "Financiamento",
+    "prompt": "cenÃ¡rio negativo para Financiamento",
+    "expected": "(financiamento|simulaÃ§Ã£o|parcelas|crÃ©dito)",
+    "intent": "Financiamento",
+    "entity": "financiamento",
+    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
+    "title": "Financiamento - cenÃ¡rio negativo",
+    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio Financiamento.",
+    "priority": "Critical",
+    "severity": "Major",
+    "type": "Regression",
+    "tags": [
+      "Financiamento",
+      "Regression",
+      "Critical",
+      "Negative"
+    ],
+    "feature": "SimulaÃ§Ã£o de Financiamento",
+    "requirementId": "REQ-038",
+    "author": "Caio Santos",
+    "version": "1.0"
+  },
+  {
+    "id": "financiamento-error-008",
+    "categoria": "Financiamento",
+    "prompt": "cenÃ¡rio com response ausente para Financiamento",
+    "expected": "(financiamento|simulaÃ§Ã£o|parcelas|crÃ©dito)",
+    "intent": "Financiamento",
+    "entity": "financiamento",
+    "title": "Financiamento - response ausente",
+    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio Financiamento.",
+    "priority": "High",
+    "severity": "Major",
+    "type": "Exploratory",
+    "tags": [
+      "Financiamento",
+      "Exploratory",
+      "High",
+      "MissingResponse"
+    ],
+    "feature": "SimulaÃ§Ã£o de Financiamento",
+    "requirementId": "REQ-048",
+    "author": "Caio Santos",
+    "version": "1.0"
+  }
+]
