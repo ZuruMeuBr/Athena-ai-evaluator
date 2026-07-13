@@ -1,4 +1,5 @@
 import { generateHtmlReport } from "../src/report/htmlReportGenerator";
+import { defaultQualityGateCriteria, evaluateQualityGate } from "../src/qualityGate";
 import type { ExecutionComparisonReport } from "../src/reportComparison";
 import type { ExecutionHistoryEntry, ExecutionReportPayload } from "../src/reportWriter";
 import type { EvaluationResult } from "../src/types";
@@ -178,6 +179,35 @@ describe("generateHtmlReport", () => {
     expect(html).toContain("priority=Critical");
     expect(html).toContain("Execution Duration");
     expect(html).toContain("245 ms");
+  });
+
+  it("renders a disabled Quality Gate section when the gate was not requested", () => {
+    const html = generateHtmlReport(reportPayload(), new Date(2026, 5, 17, 12, 30, 0));
+
+    expect(html).toContain("<h2>Quality Gate</h2>");
+    expect(html).toContain("Quality Gate: Disabled");
+    expect(html).toContain("DISABLED");
+  });
+
+  it("renders Quality Gate status and all gate criteria", () => {
+    const payload = reportPayload();
+    const qualityGate = evaluateQualityGate({
+      enabled: true,
+      criteria: defaultQualityGateCriteria,
+      summary: payload.summary,
+      results: payload.results,
+      comparison: null
+    });
+    const html = generateHtmlReport({ ...payload, qualityGate }, new Date(2026, 5, 17, 12, 30, 0));
+
+    expect(html).toContain("Quality Gate: FAILED");
+    expect(html).toContain("Success Rate Gate");
+    expect(html).toContain("Avg Score Gate");
+    expect(html).toContain("Fail Count Gate");
+    expect(html).toContain("Error Count Gate");
+    expect(html).toContain("Regression Count Gate");
+    expect(html).toContain("Critical Failures Gate");
+    expect(html).toContain("Regression gate skipped because no previous comparison is available.");
   });
 
   it("renders comparison cards when comparison data exists", () => {

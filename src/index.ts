@@ -4,8 +4,19 @@ import { createProvider } from "./config/providerFactory";
 import { printResults } from "./consoleReporter";
 import { evaluateScenarios } from "./evaluator";
 import { loadPromptScenarios } from "./promptLoader";
+import {
+  defaultQualityGateCriteria,
+  evaluateQualityGate,
+  loadQualityGateCriteria,
+  parseQualityGateArgs,
+  printQualityGateResult
+} from "./qualityGate";
 import { compareLatestWithPrevious, type ExecutionComparisonReport } from "./reportComparison";
-import { refreshExecutionHtmlReports, writeExecutionReports } from "./reportWriter";
+import {
+  refreshExecutionHtmlReports,
+  writeExecutionQualityGate,
+  writeExecutionReports
+} from "./reportWriter";
 import {
   filterScenariosByMetadata,
   formatScenarioFilters,
@@ -54,11 +65,15 @@ async function main(): Promise<void> {
   const startedAt = Date.now();
   const executionDate = new Date();
   const config = loadAppConfig();
+  const qualityGateCli = parseQualityGateArgs(process.argv.slice(2));
+  const qualityGateCriteria = qualityGateCli.enabled
+    ? await loadQualityGateCriteria()
+    : { ...defaultQualityGateCriteria };
   const scenarios = await loadPromptScenarios(promptsPath, {
     provider: config.provider,
     strictMockResponseValidation: config.strictMockResponseValidation
   });
-  const filters = parseScenarioFilters(process.argv.slice(2));
+  const filters = parseScenarioFilters(qualityGateCli.remainingArgs);
   const filteredScenarios = filterScenariosByMetadata(scenarios, filters);
 
   if (hasScenarioFilters(filters)) {
@@ -85,6 +100,19 @@ async function main(): Promise<void> {
   printGeneratedReports(generatedReportPaths);
 
   const comparisonResult = await compareLatestWithPrevious(reportsRootPath);
+  const qualityGate = evaluateQualityGate({
+    enabled: qualityGateCli.enabled,
+    criteria: qualityGateCriteria,
+    summary: generatedReportPaths.payload.summary,
+    results,
+    comparison: comparisonResult.comparison
+  });
+
+  await writeExecutionQualityGate({
+    reportsRootPath,
+    executionId: generatedReportPaths.executionId,
+    qualityGate
+  });
 
   await refreshExecutionHtmlReports({
     reportsRootPath,
@@ -94,6 +122,14 @@ async function main(): Promise<void> {
 
   if (comparisonResult.comparison !== null) {
     printComparisonSummary(comparisonResult.comparison);
+  }
+
+  if (qualityGate.enabled) {
+    printQualityGateResult(qualityGate);
+  }
+
+  if (qualityGate.status === "FAILED") {
+    process.exitCode = 1;
   }
 }
 

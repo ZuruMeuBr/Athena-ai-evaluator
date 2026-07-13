@@ -11,6 +11,7 @@
     "evaluate": "node scripts/evaluate.js",
     "evaluate:category": "npm run build && node dist/src/index.js --category",
     "import": "npm run build && node dist/src/import/index.js",
+    "validate": "npm run validate:scenarios",
     "validate:scenarios": "npm run build && node dist/src/validateScenarios.js"
   },
   "keywords": [

@@ -5,9 +5,11 @@ import {
   buildExecutionReportPayload,
   createExecutionId,
   refreshExecutionHtmlReports,
+  writeExecutionQualityGate,
   writeExecutionReports,
   type ExecutionHistoryEntry
 } from "../src/reportWriter";
+import { defaultQualityGateCriteria, evaluateQualityGate } from "../src/qualityGate";
 import type { EvaluationResult } from "../src/types";
 
 function createTempDir(): string {
@@ -188,6 +190,57 @@ describe("reportWriter", () => {
       expect(latestHtml).toContain("Filters: feature=Compra");
       expect(latestHtml).toContain('<span class="kpi-label">Execution Duration</span>');
       expect(latestHtml).toContain('<strong class="kpi-value">300 ms</strong>');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("adds Quality Gate data to latest, history and legacy report.json", async () => {
+    const dir = createTempDir();
+    const reportsRootPath = join(dir, "reports");
+
+    try {
+      const paths = await writeExecutionReports({
+        reportsRootPath,
+        results: [result],
+        appliedFilters: {},
+        executionDate: new Date(2026, 5, 25, 14, 5, 22),
+        durationMs: 300
+      });
+      const qualityGate = evaluateQualityGate({
+        enabled: true,
+        criteria: defaultQualityGateCriteria,
+        summary: paths.payload.summary,
+        results: [result],
+        comparison: null
+      });
+
+      await writeExecutionQualityGate({
+        reportsRootPath,
+        executionId: paths.executionId,
+        qualityGate
+      });
+
+      for (const reportPath of [
+        join(reportsRootPath, "latest", "report.json"),
+        join(reportsRootPath, "history", paths.executionId, "report.json"),
+        join(reportsRootPath, "report.json")
+      ]) {
+        expect(readJson<Record<string, unknown>>(reportPath)).toMatchObject({
+          qualityGate: {
+            enabled: true,
+            status: "PASSED",
+            criteria: defaultQualityGateCriteria,
+            results: {
+              successRate: {
+                actual: 100,
+                expected: 90,
+                status: "PASSED"
+              }
+            }
+          }
+        });
+      }
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

@@ -5,6 +5,7 @@ import {
   type ComparisonViewModel,
   type ExecutionHistoryViewModel,
   type ExecutionInfoViewModel,
+  type QualityGateViewModel,
   type SafeScenarioViewModel
 } from "../reportViewModel";
 import type { ExecutionHistoryEntry, ExecutionReportPayload } from "../reportWriter";
@@ -129,6 +130,45 @@ function renderExecutionInfo(info: ExecutionInfoViewModel): string {
         ${renderInfoItem(reportLabels.appliedFilters, info.appliedFiltersLabel)}
         ${renderInfoItem(reportLabels.executionDuration, info.durationLabel)}
       </div>
+    </section>`;
+}
+
+function qualityGateStatusBadge(status: string): string {
+  const normalizedStatus = status.toLowerCase();
+  const className =
+    status === "PASSED"
+      ? "status status-pass"
+      : status === "FAILED"
+        ? "status status-error"
+        : "status status-disabled";
+
+  return `<span class="${className}">${escapeHtml(normalizedStatus.toUpperCase())}</span>`;
+}
+
+function renderQualityGateSection(qualityGate: QualityGateViewModel): string {
+  if (!qualityGate.enabled) {
+    return `<section class="section-card" aria-label="Quality Gate">
+      <h2>${reportLabels.qualityGate}</h2>
+      <p class="section-note">${escapeHtml(qualityGate.message)}</p>
+      ${qualityGateStatusBadge(qualityGate.status)}
+    </section>`;
+  }
+
+  return `<section class="section-card" aria-label="Quality Gate">
+      <h2>${reportLabels.qualityGate}</h2>
+      <p class="section-note">${escapeHtml(qualityGate.message)} ${qualityGateStatusBadge(qualityGate.status)}</p>
+      <div class="quality-gate-grid">
+        ${qualityGate.metrics
+          .map(
+            (metric) => `<article class="info-item">
+              <span>${escapeHtml(metric.label)}</span>
+              <strong>${escapeHtml(metric.actual)} / ${escapeHtml(metric.expected)}</strong>
+              ${qualityGateStatusBadge(metric.status)}
+            </article>`
+          )
+          .join("")}
+      </div>
+      ${qualityGate.warnings.map((warning) => `<p class="quality-gate-warning">${escapeHtml(warning)}</p>`).join("")}
     </section>`;
 }
 
@@ -424,7 +464,8 @@ export function generateHtmlReport(input: HtmlReportInput, executionDate = new D
     }
 
     .info-grid,
-    .comparison-grid {
+    .comparison-grid,
+    .quality-gate-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
@@ -640,6 +681,18 @@ export function generateHtmlReport(input: HtmlReportInput, executionDate = new D
       color: var(--error-text);
     }
 
+    .status-disabled {
+      background: var(--surface-soft);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .quality-gate-warning {
+      margin: 14px 0 0;
+      color: var(--fail-text);
+      font-weight: 700;
+    }
+
     .metadata-badge,
     .tag-badge {
       display: inline-flex;
@@ -783,6 +836,7 @@ export function generateHtmlReport(input: HtmlReportInput, executionDate = new D
       .insights-grid,
       .info-grid,
       .comparison-grid,
+      .quality-gate-grid,
       .table-toolbar {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -803,6 +857,7 @@ export function generateHtmlReport(input: HtmlReportInput, executionDate = new D
       .insights-grid,
       .info-grid,
       .comparison-grid,
+      .quality-gate-grid,
       .table-toolbar,
       .diagnostic-grid {
         grid-template-columns: 1fr;
@@ -821,6 +876,8 @@ export function generateHtmlReport(input: HtmlReportInput, executionDate = new D
     </header>
 
     ${renderExecutionInfo(viewModel.executionInfo)}
+
+    ${renderQualityGateSection(viewModel.qualityGate)}
 
     ${renderComparisonSection(viewModel.comparison)}
 

@@ -331,6 +331,94 @@ Evaluation failed: No scenarios found for filters: priority=Critical, type=Regre
 
 O terminal exibira `PASS` ou `FAIL` para cada cenario.
 
+## Quality Gates
+
+Quality Gates transformam o resultado da avaliacao em uma decisao automatica para CI/CD. Quando o gate esta habilitado, o Athena compara as metricas da execucao com limites configurados e encerra com exit code `1` se qualquer criterio obrigatorio falhar. Sem `--quality-gate`, a avaliacao mantem o comportamento normal e o gate aparece como `DISABLED` nos relatorios.
+
+Execute o gate para toda a suite ou combine-o com os filtros existentes:
+
+```bash
+npm run evaluate -- --quality-gate
+npm run evaluate -- --quality-gate --priority Critical
+npm run evaluate -- --quality-gate --tag Compra
+```
+
+Os criterios podem ser definidos no arquivo opcional `quality-gates.json` na raiz do projeto:
+
+```json
+{
+  "minSuccessRate": 80,
+  "minAvgScore": 70,
+  "maxFailCount": 10,
+  "maxErrorCount": 5,
+  "maxRegressionCount": 0,
+  "blockOnCriticalFailures": true
+}
+```
+
+Se o arquivo nao existir, o Athena usa:
+
+```json
+{
+  "minSuccessRate": 90,
+  "minAvgScore": 80,
+  "maxFailCount": 0,
+  "maxErrorCount": 0,
+  "maxRegressionCount": 0,
+  "blockOnCriticalFailures": true
+}
+```
+
+Criterios disponiveis:
+
+- `minSuccessRate`: percentual minimo de cenarios com status `PASS`.
+- `minAvgScore`: percentual medio minimo de `scorePercent`; nao altera o score original de 0 a 3.
+- `maxFailCount`: quantidade maxima de cenarios `FAIL`.
+- `maxErrorCount`: quantidade maxima de cenarios `ERROR`.
+- `maxRegressionCount`: quantidade maxima de regressoes em relacao a execucao anterior.
+- `blockOnCriticalFailures`: reprova quando qualquer cenario com `priority=Critical`, sem diferenca entre maiusculas e minusculas, termina diferente de `PASS`.
+
+Quando ainda nao existe comparacao anterior, o criterio de regressoes fica como `SKIPPED`, assume zero regressoes e exibe:
+
+```text
+Regression gate skipped because no previous comparison is available.
+```
+
+Exemplo aprovado:
+
+```text
+Quality Gate: PASSED
+Success Rate: 94% / Required: 90%
+Avg Score: 92% / Required: 80%
+Failures: 0 / Max: 0
+Errors: 0 / Max: 0
+Regressions: 0 / Max: 0
+Critical Failures: 0 / Blocking: Yes
+```
+
+Exemplo reprovado:
+
+```text
+Quality Gate: FAILED
+Success Rate: 76% / Required: 90%
+Avg Score: 68% / Required: 80%
+Failures: 8 / Max: 0
+Errors: 2 / Max: 0
+Regressions: 1 / Max: 0
+Critical Failures: 1 / Blocking: Yes
+```
+
+Em CI/CD, basta usar o exit code do comando:
+
+```bash
+npm ci
+npm run validate
+npm test
+npm run evaluate -- --quality-gate
+```
+
+Uma execucao aprovada retorna `0`; uma execucao reprovada pelo gate retorna `1`. O objeto `qualityGate` tambem e gravado em `report.json`, e o dashboard HTML mostra status, criterios, valores atuais e avisos.
+
 ## Relatorios
 
 A execucao gera automaticamente:

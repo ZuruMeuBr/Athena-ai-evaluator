@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import type { ScenarioFilters } from "./cli/scenarioFilters";
+import type { QualityGateResult } from "./qualityGate";
 import type { EvaluationResult } from "./types";
 import { generateHtmlReport, type HtmlReportContext } from "./report/htmlReportGenerator";
 
@@ -21,6 +22,7 @@ export interface ExecutionReportPayload {
   appliedFilters: Record<string, string | string[]>;
   summary: ReportSummary;
   results: EvaluationResult[];
+  qualityGate?: QualityGateResult;
 }
 
 export interface ExecutionHistoryEntry extends ReportSummary {
@@ -43,6 +45,7 @@ export interface WriteExecutionReportsOptions {
 
 export interface GeneratedReportPaths {
   executionId: string;
+  payload: ExecutionReportPayload;
   latestJsonPath: string;
   latestHtmlPath: string;
   historyJsonPath: string;
@@ -200,6 +203,25 @@ export async function refreshExecutionHtmlReports(options: {
   ]);
 }
 
+export async function writeExecutionQualityGate(options: {
+  reportsRootPath: string;
+  executionId: string;
+  qualityGate: QualityGateResult;
+}): Promise<void> {
+  const latestJsonPath = resolve(options.reportsRootPath, "latest", "report.json");
+  const historyJsonPath = resolve(options.reportsRootPath, "history", options.executionId, "report.json");
+  const legacyJsonPath = resolve(options.reportsRootPath, "report.json");
+  const payload = JSON.parse(await readFile(latestJsonPath, "utf8")) as ExecutionReportPayload;
+
+  payload.qualityGate = options.qualityGate;
+
+  await Promise.all([
+    writeJson(latestJsonPath, payload),
+    writeJson(historyJsonPath, payload),
+    writeJson(legacyJsonPath, payload)
+  ]);
+}
+
 export async function writeExecutionReports(options: WriteExecutionReportsOptions): Promise<GeneratedReportPaths> {
   const executionDate = options.executionDate ?? new Date();
   const executionId = createExecutionId(executionDate);
@@ -246,6 +268,7 @@ export async function writeExecutionReports(options: WriteExecutionReportsOption
 
   return {
     executionId,
+    payload,
     latestJsonPath: "reports/latest/report.json",
     latestHtmlPath: "reports/latest/report.html",
     historyJsonPath: relativeHistoryJsonPath,

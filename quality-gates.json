@@ -1,0 +1,8 @@
+{
+  "minSuccessRate": 80,
+  "minAvgScore": 70,
+  "maxFailCount": 10,
+  "maxErrorCount": 5,
+  "maxRegressionCount": 0,
+  "blockOnCriticalFailures": true
+}

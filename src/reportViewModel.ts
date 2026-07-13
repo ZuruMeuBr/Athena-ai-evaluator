@@ -108,6 +108,21 @@ export interface ComparisonViewModel {
   metrics: ComparisonMetricViewModel[];
 }
 
+export interface QualityGateMetricViewModel {
+  label: string;
+  actual: string;
+  expected: string;
+  status: string;
+}
+
+export interface QualityGateViewModel {
+  enabled: boolean;
+  status: string;
+  message: string;
+  metrics: QualityGateMetricViewModel[];
+  warnings: string[];
+}
+
 export interface ExecutionHistoryViewModel {
   executionId: string;
   executedAt: string;
@@ -135,6 +150,7 @@ export interface ReportDashboardViewModel {
     scoreDistribution: ChartViewModel;
   };
   comparison: ComparisonViewModel;
+  qualityGate: QualityGateViewModel;
   history: ExecutionHistoryViewModel[];
   historyMessage: string;
   comparisonMessage: string;
@@ -619,6 +635,85 @@ function buildComparison(comparison: unknown): ComparisonViewModel {
   };
 }
 
+function safeQualityGateStatus(value: unknown, fallback = "FAILED"): string {
+  return value === "PASSED" || value === "FAILED" || value === "DISABLED" || value === "SKIPPED"
+    ? value
+    : fallback;
+}
+
+function buildQualityGate(currentReport: Partial<ExecutionReportPayload>): QualityGateViewModel {
+  const qualityGate = isRecord(currentReport.qualityGate) ? currentReport.qualityGate : null;
+
+  if (qualityGate === null || qualityGate.enabled !== true) {
+    return {
+      enabled: false,
+      status: "DISABLED",
+      message: reportLabels.qualityGateDisabled,
+      metrics: [],
+      warnings: []
+    };
+  }
+
+  const criteria: Record<string, unknown> = isRecord(qualityGate.criteria) ? qualityGate.criteria : {};
+  const results: Record<string, unknown> = isRecord(qualityGate.results) ? qualityGate.results : {};
+  const successRate: Record<string, unknown> = isRecord(results.successRate) ? results.successRate : {};
+  const avgScore: Record<string, unknown> = isRecord(results.avgScore) ? results.avgScore : {};
+  const failCount: Record<string, unknown> = isRecord(results.failCount) ? results.failCount : {};
+  const errorCount: Record<string, unknown> = isRecord(results.errorCount) ? results.errorCount : {};
+  const regressionCount: Record<string, unknown> = isRecord(results.regressionCount) ? results.regressionCount : {};
+  const criticalFailures: Record<string, unknown> = isRecord(results.criticalFailures)
+    ? results.criticalFailures
+    : {};
+  const warnings = Array.isArray(qualityGate.warnings)
+    ? qualityGate.warnings.filter((warning): warning is string => typeof warning === "string")
+    : [];
+
+  return {
+    enabled: true,
+    status: safeQualityGateStatus(qualityGate.status),
+    message: `Quality Gate: ${safeQualityGateStatus(qualityGate.status)}`,
+    metrics: [
+      {
+        label: reportLabels.successRateGate,
+        actual: `${formatNumber(safeNumber(successRate.actual))}%`,
+        expected: `Minimum ${formatNumber(safeNumber(criteria.minSuccessRate))}%`,
+        status: safeQualityGateStatus(successRate.status)
+      },
+      {
+        label: reportLabels.avgScoreGate,
+        actual: `${formatNumber(safeNumber(avgScore.actual))}%`,
+        expected: `Minimum ${formatNumber(safeNumber(criteria.minAvgScore))}%`,
+        status: safeQualityGateStatus(avgScore.status)
+      },
+      {
+        label: reportLabels.failCountGate,
+        actual: formatNumber(safeNumber(failCount.actual)),
+        expected: `Maximum ${formatNumber(safeNumber(criteria.maxFailCount))}`,
+        status: safeQualityGateStatus(failCount.status)
+      },
+      {
+        label: reportLabels.errorCountGate,
+        actual: formatNumber(safeNumber(errorCount.actual)),
+        expected: `Maximum ${formatNumber(safeNumber(criteria.maxErrorCount))}`,
+        status: safeQualityGateStatus(errorCount.status)
+      },
+      {
+        label: reportLabels.regressionCountGate,
+        actual: formatNumber(safeNumber(regressionCount.actual)),
+        expected: `Maximum ${formatNumber(safeNumber(criteria.maxRegressionCount))}`,
+        status: safeQualityGateStatus(regressionCount.status)
+      },
+      {
+        label: reportLabels.criticalFailuresGate,
+        actual: formatNumber(safeNumber(criticalFailures.actual)),
+        expected: criteria.blockOnCriticalFailures === true ? "Maximum 0" : "Not blocking",
+        status: safeQualityGateStatus(criticalFailures.status)
+      }
+    ],
+    warnings
+  };
+}
+
 function comparisonMessage(comparison: ComparisonViewModel): string {
   if (!comparison.available) {
     return comparison.message;
@@ -647,6 +742,7 @@ export function buildReportViewModel(input: BuildReportViewModelInput): ReportDa
     insights: getInsights(scenarios, summary, categorySummaries),
     chartData: buildChartData(summary, scenarios, categorySummaries),
     comparison,
+    qualityGate: buildQualityGate(currentReport),
     history,
     historyMessage: historyMessage(history),
     comparisonMessage: comparisonMessage(comparison)
