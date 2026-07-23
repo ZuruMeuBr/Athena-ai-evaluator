@@ -7,8 +7,8 @@
     "intent": "Agendamento",
     "entity": "test drive",
     "response": "Vamos realizar o agendamento do seu test drive.",
-    "title": "Agendamento - cenÃ¡rio positivo 1",
-    "description": "Validar resposta correta para o domÃ­nio Agendamento.",
+    "title": "Agendamento - cenário positivo 1",
+    "description": "Validar resposta correta para o domínio Agendamento.",
     "priority": "Medium",
     "severity": "Major",
     "type": "Functional",
@@ -17,7 +17,7 @@
       "Functional",
       "Medium"
     ],
-    "feature": "Agendamento de ServiÃ§os",
+    "feature": "Agendamento de Serviços",
     "requirementId": "REQ-007",
     "author": "Caio Santos",
     "version": "1.0"
@@ -30,8 +30,8 @@
     "intent": "Agendamento",
     "entity": "test drive",
     "response": "Vamos realizar o agendamento do seu test drive.",
-    "title": "Agendamento - cenÃ¡rio positivo 2",
-    "description": "Validar resposta correta para o domÃ­nio Agendamento.",
+    "title": "Agendamento - cenário positivo 2",
+    "description": "Validar resposta correta para o domínio Agendamento.",
     "priority": "Low",
     "severity": "Minor",
     "type": "Exploratory",
@@ -40,7 +40,7 @@
       "Exploratory",
       "Low"
     ],
-    "feature": "Agendamento de ServiÃ§os",
+    "feature": "Agendamento de Serviços",
     "requirementId": "REQ-008",
     "author": "Caio Santos",
     "version": "1.0"
@@ -53,8 +53,8 @@
     "intent": "Agendamento",
     "entity": "test drive",
     "response": "Vamos realizar o agendamento do seu test drive.",
-    "title": "Agendamento - cenÃ¡rio positivo 3",
-    "description": "Validar resposta correta para o domÃ­nio Agendamento.",
+    "title": "Agendamento - cenário positivo 3",
+    "description": "Validar resposta correta para o domínio Agendamento.",
     "priority": "Critical",
     "severity": "Blocker",
     "type": "Smoke",
@@ -63,7 +63,7 @@
       "Smoke",
       "Critical"
     ],
-    "feature": "Agendamento de ServiÃ§os",
+    "feature": "Agendamento de Serviços",
     "requirementId": "REQ-009",
     "author": "Caio Santos",
     "version": "1.0"
@@ -71,13 +71,13 @@
   {
     "id": "agendamento-fail-003",
     "categoria": "Agendamento",
-    "prompt": "cenÃ¡rio negativo para Agendamento",
+    "prompt": "cenário negativo para Agendamento",
     "expected": "(agendar|agendamento|test drive|marcar)",
     "intent": "Agendamento",
     "entity": "test drive",
-    "response": "NÃ£o consegui entender sua solicitaÃ§Ã£o. Poderia reformular?",
-    "title": "Agendamento - cenÃ¡rio negativo",
-    "description": "Validar falha controlada quando a resposta nÃ£o atende o domÃ­nio Agendamento.",
+    "response": "Não consegui entender sua solicitação. Poderia reformular?",
+    "title": "Agendamento - cenário negativo",
+    "description": "Validar falha controlada quando a resposta não atende o domínio Agendamento.",
     "priority": "Low",
     "severity": "Blocker",
     "type": "Exploratory",
@@ -87,7 +87,7 @@
       "Low",
       "Negative"
     ],
-    "feature": "Agendamento de ServiÃ§os",
+    "feature": "Agendamento de Serviços",
     "requirementId": "REQ-033",
     "author": "Caio Santos",
     "version": "1.0"
@@ -95,12 +95,12 @@
   {
     "id": "agendamento-error-003",
     "categoria": "Agendamento",
-    "prompt": "cenÃ¡rio com response ausente para Agendamento",
+    "prompt": "cenário com response ausente para Agendamento",
     "expected": "(agendar|agendamento|test drive|marcar)",
     "intent": "Agendamento",
     "entity": "test drive",
     "title": "Agendamento - response ausente",
-    "description": "Validar tratamento MISSING_RESPONSE no domÃ­nio Agendamento.",
+    "description": "Validar tratamento MISSING_RESPONSE no domínio Agendamento.",
     "priority": "Critical",
     "severity": "Blocker",
     "type": "Functional",
@@ -110,9 +110,10 @@
       "Critical",
       "MissingResponse"
     ],
-    "feature": "Agendamento de ServiÃ§os",
+    "feature": "Agendamento de Serviços",
     "requirementId": "REQ-043",
     "author": "Caio Santos",
     "version": "1.0"
   }
 ]
+
