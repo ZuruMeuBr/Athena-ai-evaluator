@@ -641,19 +641,3 @@ O CI usa o `MockProvider` e nao executa `--quality-gate` como etapa obrigatoria 
 O dashboard mais recente e gerado em `reports/latest/report.html`. Ele apresenta resumo da execucao, distribuicao de status, resultados por categoria, diagnosticos, Quality Gate, historico e comparacao com a execucao anterior.
 
 A pasta `docs/images/` esta preparada para receber capturas versionadas do dashboard. Nenhuma imagem e publicada nesta versao enquanto nao houver um print definitivo revisado para portfolio.
-
-## Roadmap futuro
-
-Itens considerados para depois da estabilizacao da v1.0.0:
-
-- baseline versionada para cenarios e metricas;
-- validacao semantica opcional;
-- novos adapters de providers;
-- publicacao de artefatos de relatorio no CI;
-- interface web, somente se houver necessidade comprovada.
-
-Esses itens nao fazem parte do escopo do MVP v1.0.0.
-
-## Status da versao
-
-O projeto esta em preparacao para a tag `v1.0.0`. Antes da publicacao, recomenda-se confirmar o workflow verde no GitHub Actions, revisar o conteudo que sera exibido no portfolio e adicionar uma captura definitiva do dashboard em `docs/images/`.
