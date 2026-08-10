@@ -55,6 +55,7 @@ function comparison(regressionsCount: number, improvementsCount: number): Execut
   return {
     currentExecutionId: "current",
     previousExecutionId: "previous",
+    sameScope: true,
     summary: {
       currentSuccessRate: 60,
       previousSuccessRate: 80,
@@ -71,13 +72,18 @@ function comparison(regressionsCount: number, improvementsCount: number): Execut
       regressionsCount,
       improvementsCount,
       newScenariosCount: 0,
-      removedScenariosCount: 0
+      removedScenariosCount: 0,
+      scopeDifferencesCount: 0
     },
     regressions: [],
     improvements: [],
     unchanged: [],
     newScenarios: [],
-    removedScenarios: []
+    removedScenarios: [],
+    scopeDifferences: {
+      currentOnlyScenarios: [],
+      previousOnlyScenarios: []
+    }
   };
 }
 

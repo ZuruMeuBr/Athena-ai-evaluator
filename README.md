@@ -1,6 +1,93 @@
-# llm-evaluator
+# Athena AI Evaluator
 
-Framework de Quality Engineering para IA Conversacional. O projeto avalia cenarios reais de NLP usando regex, intents, entities e providers de LLM, gerando relatorios JSON e HTML.
+[![CI](https://github.com/ZuruMeuBr/Athena-ai-evaluator/actions/workflows/ci.yml/badge.svg)](https://github.com/ZuruMeuBr/Athena-ai-evaluator/actions/workflows/ci.yml)
+[![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+
+Framework de Quality Engineering para IA Conversacional. O Athena executa cenarios de NLP, valida respostas por regex, intent e entity, compara execucoes e produz evidencias JSON/HTML prontas para analise e automacao de qualidade.
+
+## O problema que o Athena resolve
+
+Validar uma IA conversacional exige mais do que conferir se uma resposta foi gerada. Times de QA precisam de criterios reproduziveis, rastreabilidade, segmentacao por risco e uma forma objetiva de detectar regressoes entre execucoes. O Athena organiza esse fluxo em um runner local e automatizavel, com massa versionada, providers intercambiaveis, Quality Gates e relatorios historicos.
+
+## Principais funcionalidades
+
+- validacao combinada de Regex, Intent e Entity;
+- `MockProvider` deterministico para desenvolvimento e CI;
+- `GeminiProvider` com timeout, retry e tratamento de erros;
+- importacao de cenarios CSV/XLSX com suporte a UTF-8 e BOM;
+- schema validation, IDs unicos e metadados profissionais de QA;
+- filtros por categoria, prioridade, severidade, tipo, tag, feature, requisito, autor e versao;
+- historico e comparacao entre execucoes, incluindo protecao contra falsos cenarios removidos quando os filtros mudam;
+- Quality Gates configuraveis para uso em pipelines;
+- dashboard HTML e relatorio JSON com diagnosticos por cenario;
+- suite automatizada com Jest e pipeline de CI no GitHub Actions.
+
+## Arquitetura resumida
+
+```text
+prompts.json / CSV / XLSX
+            |
+            v
+Schema + metadata filters
+            |
+            v
+Provider (Mock ou Gemini)
+            |
+            v
+Regex + Intent + Entity validators
+            |
+            v
+Score + Quality Gate + Comparison
+            |
+            v
+JSON report + HTML dashboard + History
+```
+
+Responsabilidades principais:
+
+- `src/`: orquestracao, configuracao, importacao, filtros, comparacao, relatorios e Quality Gates;
+- `providers/`: contrato de provider e implementacoes Mock/Gemini;
+- `validators/`: validadores Regex, Intent e Entity;
+- `scenarios/` e `prompts.json`: massa de cenarios versionada;
+- `tests/`: testes unitarios e de integracao local;
+- `scripts/`: comandos auxiliares usados pelos scripts npm;
+- `reports/`: artefatos locais gerados e ignorados pelo Git.
+
+## Inicio rapido
+
+Requisitos: Git, Node.js 20 ou superior e npm.
+
+```bash
+git clone https://github.com/ZuruMeuBr/Athena-ai-evaluator.git
+cd Athena-ai-evaluator
+npm install
+```
+
+No Windows, crie a configuracao local e use inicialmente o provider Mock:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+```env
+PROVIDER=mock
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-2.5-flash
+GEMINI_TIMEOUT_MS=30000
+STRICT_MOCK_RESPONSE_VALIDATION=false
+```
+
+Valide e execute:
+
+```bash
+npm run build
+npm test
+npm run validate
+npm run evaluate
+```
+
+Abra `reports/latest/report.html` no navegador para consultar o dashboard da ultima execucao.
 
 ## Conceitos
 
@@ -469,9 +556,15 @@ O arquivo `reports/comparison.json` identifica:
 - regressions, como `PASS -> FAIL`, `PASS -> ERROR`, queda de `scorePercent` ou piora de `overallStatus`;
 - improvements, como `FAIL -> PASS`, `ERROR -> PASS`, aumento de `scorePercent` ou melhora de `overallStatus`;
 - cenarios inalterados;
-- cenarios novos;
-- cenarios removidos;
+- cenarios novos e removidos quando as duas execucoes possuem o mesmo escopo;
+- diferencas de escopo entre cenarios presentes apenas na execucao atual ou apenas na anterior;
 - variacoes de `successRate`, `avgScore`, `errorCount` e `failCount`.
+
+O campo `sameScope` indica se os `appliedFilters` das duas execucoes sao equivalentes. Ele e `true` quando ambas nao possuem filtros ou quando possuem o mesmo conteudo, independentemente da ordem das chaves e dos valores. Ele e `false` quando apenas uma execucao possui filtros ou quando as chaves ou valores sao diferentes.
+
+Com `sameScope: true`, IDs presentes apenas na execucao atual entram em `newScenarios` e IDs presentes apenas na anterior entram em `removedScenarios`. Com `sameScope: false`, essas diferencas entram em `scopeDifferences.currentOnlyScenarios` e `scopeDifferences.previousOnlyScenarios`; `newScenarios` e `removedScenarios` permanecem vazios. Isso evita interpretar como remocao real um cenario que apenas ficou fora de um filtro como `--tag Compra`.
+
+Regressoes e melhorias continuam sendo calculadas somente para IDs presentes nas duas execucoes. Assim, diferencas de filtro nao aumentam `regressionsCount` e nao afetam incorretamente o criterio `maxRegressionCount` dos Quality Gates.
 
 Ao final da execucao, o terminal mostra um resumo:
 
@@ -482,6 +575,14 @@ Regressions: 3
 Improvements: 2
 New scenarios: 1
 Removed scenarios: 0
+Scope differences: 0
+```
+
+Quando os filtros sao diferentes, o terminal tambem exibe:
+
+```text
+Comparison scope warning:
+Executions have different filters. Scenario differences may reflect filter scope, not actual additions/removals.
 ```
 
 No `report.html`, o dashboard usa `title` no lugar do `id` quando disponivel, exibe `priority` e `severity` com badges coloridas e mostra `tags`, `feature` e `requirementId` no painel expandido de diagnostico.
@@ -489,7 +590,7 @@ No `report.html`, o dashboard usa `title` no lugar do `id` quando disponivel, ex
 O dashboard HTML tambem mostra a historia da qualidade da suite:
 
 - `Execution Info`: exibe `executionId`, `executedAt`, provider, modelo, filtros aplicados e duracao da execucao. Quando nao ha filtros, exibe `Filters: None`.
-- `Comparison with Previous Execution`: compara a execucao atual com a anterior e mostra success rate atual/anterior, delta de success rate, score medio atual/anterior, delta de score, regressions, improvements, cenarios novos e cenarios removidos.
+- `Comparison with Previous Execution`: compara a execucao atual com a anterior e mostra success rate atual/anterior, delta de success rate, score medio atual/anterior, delta de score, regressions, improvements, cenarios novos, cenarios removidos e diferencas de escopo. Quando `sameScope` e `false`, a secao exibe um aviso visual de que as diferencas podem refletir filtros distintos.
 - `Execution History`: lista as ultimas 10 execucoes registradas em `reports/history.json`, com totais, PASS, FAIL, ERROR, success rate, score medio e filtros aplicados.
 
 Todos os textos visiveis do dashboard HTML sao padronizados em ingles. Datas e horarios sao exibidos no formato `DD/MM/YYYY HH:mm:ss`, usando o timezone `America/Sao_Paulo`. Duracoes sao exibidas de forma amigavel, como `245 ms` ou `1.2 s`. A secao `Execution History` fica recolhida por padrao e pode ser expandida com `Show History`, mantendo o dashboard limpo para leitura rapida.
@@ -520,3 +621,39 @@ Para abrir o HTML mais recente, execute `npm run evaluate` e abra `reports/lates
 ```bash
 npm test
 ```
+
+## Integracao continua
+
+O workflow `.github/workflows/ci.yml` executa em pushes e pull requests:
+
+```text
+npm ci
+npm run build
+npm test
+npm run validate
+npm run evaluate
+```
+
+O CI usa o `MockProvider` e nao executa `--quality-gate` como etapa obrigatoria nesta versao. A massa de demonstracao contem casos `FAIL` e `ERROR` intencionais para exercitar o dashboard e os diagnosticos; esses resultados nao representam falha tecnica do pipeline.
+
+## Dashboard
+
+O dashboard mais recente e gerado em `reports/latest/report.html`. Ele apresenta resumo da execucao, distribuicao de status, resultados por categoria, diagnosticos, Quality Gate, historico e comparacao com a execucao anterior.
+
+A pasta `docs/images/` esta preparada para receber capturas versionadas do dashboard. Nenhuma imagem e publicada nesta versao enquanto nao houver um print definitivo revisado para portfolio.
+
+## Roadmap futuro
+
+Itens considerados para depois da estabilizacao da v1.0.0:
+
+- baseline versionada para cenarios e metricas;
+- validacao semantica opcional;
+- novos adapters de providers;
+- publicacao de artefatos de relatorio no CI;
+- interface web, somente se houver necessidade comprovada.
+
+Esses itens nao fazem parte do escopo do MVP v1.0.0.
+
+## Status da versao
+
+O projeto esta em preparacao para a tag `v1.0.0`. Antes da publicacao, recomenda-se confirmar o workflow verde no GitHub Actions, revisar o conteudo que sera exibido no portfolio e adicionar uma captura definitiva do dashboard em `docs/images/`.

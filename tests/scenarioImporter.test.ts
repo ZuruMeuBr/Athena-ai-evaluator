@@ -15,6 +15,43 @@ function createTempDir(): string {
 }
 
 describe("scenarioImporter", () => {
+  it("preserves UTF-8 accents and strips a CSV BOM", async () => {
+    const dir = createTempDir();
+    const accentedText = "cenário veículo revisão não ação São Paulo João ç á é í ó ú";
+
+    try {
+      const csvPath = join(dir, "cenarios-utf8.csv");
+      writeFileSync(
+        csvPath,
+        [
+          "\uFEFFid,title,categoria,prompt,expected,intent,entity,response,author",
+          `utf8-001,${accentedText},Revisão,${accentedText},cenário,Revisão,São Paulo,veículo não disponível,João`
+        ].join("\n"),
+        "utf8"
+      );
+
+      const summary = await importScenarios(csvPath, dir);
+      const rawPrompts = readFileSync(join(dir, "prompts.json"), "utf8");
+      const prompts = JSON.parse(rawPrompts) as Array<Record<string, unknown>>;
+
+      expect(summary.errors).toEqual([]);
+      expect(prompts[0]).toMatchObject({
+        title: accentedText,
+        categoria: "Revisão",
+        prompt: accentedText,
+        expected: "cenário",
+        intent: "Revisão",
+        entity: "São Paulo",
+        response: "veículo não disponível",
+        author: "João"
+      });
+      expect(rawPrompts).toContain(accentedText);
+      expect(rawPrompts).not.toContain("cenÃ¡rio");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("validates rows, ignores empty rows and reports duplicate ids", () => {
     const rows: ImportRow[] = [
       {
@@ -112,7 +149,7 @@ describe("scenarioImporter", () => {
       const worksheet = XLSX.utils.json_to_sheet([
         {
           id: "consulta-001",
-          title: "Consulta de pedido",
+          title: "Consulta de revisão em São Paulo",
           categoria: "Consulta",
           priority: "Medium",
           severity: "Minor",
@@ -120,10 +157,11 @@ describe("scenarioImporter", () => {
           tags: "Consulta,Pedido",
           feature: "Status do Pedido",
           requirementId: "REQ-002",
-          prompt: "qual o status do pedido?",
-          expected: "status",
+          author: "João",
+          prompt: "qual ação será feita na revisão do veículo?",
+          expected: "revisão",
           intent: "Consulta",
-          entity: "pedido"
+          entity: "veículo"
         }
       ]);
 
@@ -136,14 +174,18 @@ describe("scenarioImporter", () => {
       expect(rows).toHaveLength(1);
       expect(summary.scenarios[0]).toMatchObject({
         id: "consulta-001",
-        title: "Consulta de pedido",
+        title: "Consulta de revisão em São Paulo",
         categoria: "Consulta",
         priority: "Medium",
         severity: "Minor",
         type: "Functional",
         tags: ["Consulta", "Pedido"],
         feature: "Status do Pedido",
-        requirementId: "REQ-002"
+        requirementId: "REQ-002",
+        author: "João",
+        prompt: "qual ação será feita na revisão do veículo?",
+        expected: "revisão",
+        entity: "veículo"
       });
     } finally {
       rmSync(dir, { recursive: true, force: true });

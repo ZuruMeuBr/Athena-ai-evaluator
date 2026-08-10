@@ -1,7 +1,12 @@
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { compareExecutionReports, compareLatestWithPrevious } from "../src/reportComparison";
+import {
+  compareExecutionReports,
+  compareLatestWithPrevious,
+  differentScopeComparisonMessage,
+  haveSameExecutionScope
+} from "../src/reportComparison";
 import type { ExecutionHistoryEntry, ExecutionReportPayload, ReportSummary } from "../src/reportWriter";
 import type { EvaluationResult, EvaluationStatus } from "../src/types";
 
@@ -55,18 +60,69 @@ function summary(overrides: Partial<ReportSummary>): ReportSummary {
 function report(
   executionId: string,
   results: EvaluationResult[],
-  summaryOverrides: Partial<ReportSummary> = {}
+  summaryOverrides: Partial<ReportSummary> = {},
+  appliedFilters: ExecutionReportPayload["appliedFilters"] = {}
 ): ExecutionReportPayload {
   return {
     executionId,
     executedAt: "2026-06-25T16:30:00.000Z",
-    appliedFilters: {},
+    appliedFilters,
     summary: summary(summaryOverrides),
     results
   };
 }
 
 describe("reportComparison", () => {
+  it("treats two complete executions as the same scope", () => {
+    const comparison = compareExecutionReports(
+      report("current", [result("scenario-001", "PASS", 100)]),
+      report("previous", [result("scenario-001", "PASS", 100)])
+    );
+
+    expect(comparison.sameScope).toBe(true);
+    expect(comparison.message).toBeUndefined();
+  });
+
+  it("treats identical filtered executions as the same scope", () => {
+    const comparison = compareExecutionReports(
+      report("current", [], {}, { tag: "Compra", priority: "Critical" }),
+      report("previous", [], {}, { tag: "Compra", priority: "Critical" })
+    );
+
+    expect(comparison.sameScope).toBe(true);
+  });
+
+  it("ignores filter key and value order when comparing scopes", () => {
+    expect(
+      haveSameExecutionScope(
+        { tag: ["Compra", "PCD"], priority: "Critical" },
+        { priority: "Critical", tag: ["PCD", "Compra"] }
+      )
+    ).toBe(true);
+  });
+
+  it("treats a complete and a filtered execution as different scopes", () => {
+    const comparison = compareExecutionReports(
+      report("current", [], {}, { tag: "Compra" }),
+      report("previous", [])
+    );
+
+    expect(comparison.sameScope).toBe(false);
+    expect(comparison.message).toBe(differentScopeComparisonMessage);
+  });
+
+  it("treats tag Compra in both executions as the same scope", () => {
+    expect(haveSameExecutionScope({ tag: "Compra" }, { tag: "Compra" })).toBe(true);
+  });
+
+  it("treats tag Compra and tag Financiamento as different scopes", () => {
+    expect(haveSameExecutionScope({ tag: "Compra" }, { tag: "Financiamento" })).toBe(false);
+  });
+
+  it("treats priority Critical and no filter as different scopes", () => {
+    expect(haveSameExecutionScope({ priority: "Critical" }, {})).toBe(false);
+  });
+
   it("classifies PASS to FAIL as regression", () => {
     const comparison = compareExecutionReports(
       report("current", [result("scenario-001", "FAIL", 66)]),
@@ -153,6 +209,31 @@ describe("reportComparison", () => {
     ]);
     expect(comparison.summary.newScenariosCount).toBe(1);
     expect(comparison.summary.removedScenariosCount).toBe(1);
+    expect(comparison.summary.scopeDifferencesCount).toBe(0);
+    expect(comparison.sameScope).toBe(true);
+  });
+
+  it("moves absent scenarios to scope differences when filters differ", () => {
+    const comparison = compareExecutionReports(
+      report("current", [result("current-only", "PASS", 100)], {}, { tag: "Compra" }),
+      report("previous", [result("previous-only", "PASS", 100)])
+    );
+
+    expect(comparison.newScenarios).toEqual([]);
+    expect(comparison.removedScenarios).toEqual([]);
+    expect(comparison.scopeDifferences.currentOnlyScenarios).toMatchObject([
+      { id: "current-only", changeType: "CURRENT_SCOPE_ONLY" }
+    ]);
+    expect(comparison.scopeDifferences.previousOnlyScenarios).toMatchObject([
+      { id: "previous-only", changeType: "PREVIOUS_SCOPE_ONLY" }
+    ]);
+    expect(comparison.summary).toMatchObject({
+      newScenariosCount: 0,
+      removedScenariosCount: 0,
+      scopeDifferencesCount: 2,
+      regressionsCount: 0,
+      improvementsCount: 0
+    });
   });
 
   it("keeps unchanged PASS, FAIL and ERROR scenarios grouped as unchanged", () => {
@@ -215,7 +296,7 @@ describe("reportComparison", () => {
       successRate: 60,
       avgScore: 1.8,
       failCount: 1
-    });
+    }, { tag: "Compra" });
     const previous = report("previous", [result("scenario-001", "PASS", 100)], {
       successRate: 80,
       avgScore: 2.4
@@ -257,7 +338,12 @@ describe("reportComparison", () => {
       expect(existsSync(join(reportsRootPath, "comparison.json"))).toBe(true);
       expect(readJson<Record<string, unknown>>(join(reportsRootPath, "comparison.json"))).toMatchObject({
         currentExecutionId: "current",
-        previousExecutionId: "previous"
+        previousExecutionId: "previous",
+        sameScope: false,
+        message: differentScopeComparisonMessage,
+        summary: {
+          scopeDifferencesCount: 0
+        }
       });
     } finally {
       rmSync(dir, { recursive: true, force: true });

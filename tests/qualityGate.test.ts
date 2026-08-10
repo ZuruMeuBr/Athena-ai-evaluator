@@ -57,6 +57,7 @@ function comparison(regressionsCount: number): ExecutionComparisonReport {
   return {
     currentExecutionId: "current",
     previousExecutionId: "previous",
+    sameScope: true,
     summary: {
       currentSuccessRate: 100,
       previousSuccessRate: 100,
@@ -73,13 +74,18 @@ function comparison(regressionsCount: number): ExecutionComparisonReport {
       regressionsCount,
       improvementsCount: 0,
       newScenariosCount: 0,
-      removedScenariosCount: 0
+      removedScenariosCount: 0,
+      scopeDifferencesCount: 0
     },
     regressions: [],
     improvements: [],
     unchanged: [],
     newScenarios: [],
-    removedScenarios: []
+    removedScenarios: [],
+    scopeDifferences: {
+      currentOnlyScenarios: [],
+      previousOnlyScenarios: []
+    }
   };
 }
 
@@ -166,6 +172,24 @@ describe("Quality Gates", () => {
 
     expect(qualityGate.results.regressionCount.status).toBe("FAILED");
     expect(qualityGate.status).toBe("FAILED");
+  });
+
+  it("does not fail the regression gate because of scope-only scenario differences", () => {
+    const differentScopeComparison = comparison(0);
+    differentScopeComparison.sameScope = false;
+    differentScopeComparison.summary.scopeDifferencesCount = 25;
+
+    const qualityGate = evaluate({
+      criteria: { ...lenientCriteria, maxRegressionCount: 0 },
+      comparison: differentScopeComparison
+    });
+
+    expect(qualityGate.results.regressionCount).toMatchObject({
+      actual: 0,
+      expected: 0,
+      status: "PASSED"
+    });
+    expect(qualityGate.status).toBe("PASSED");
   });
 
   it("fails on a case-insensitive Critical scenario that did not pass", () => {

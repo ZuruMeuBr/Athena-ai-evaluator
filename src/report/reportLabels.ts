@@ -40,6 +40,8 @@ export const reportLabels = {
   improvements: "Improvements",
   newScenarios: "New Scenarios",
   removedScenarios: "Removed Scenarios",
+  scopeDifferences: "Scope Differences",
+  differentScopeWarning: "Executions have different scopes. New/removed scenarios may reflect filter differences.",
   executionHistory: "Execution History",
   showHistory: "Show History",
   hideHistory: "Hide History",

@@ -183,6 +183,7 @@ function renderComparisonSection(comparison: ComparisonViewModel): string {
   return `<section class="section-card" aria-label="Comparison with previous execution">
       <h2>${reportLabels.comparison}</h2>
       <p class="section-note">${escapeHtml(comparison.message)}</p>
+      ${comparison.scopeWarning === null ? "" : `<p class="comparison-scope-warning">${escapeHtml(comparison.scopeWarning)}</p>`}
       <div class="comparison-grid">
         ${comparison.metrics.map((metric) => renderKpiCard(metric.label, metric.value)).join("")}
       </div>
@@ -687,10 +688,19 @@ export function generateHtmlReport(input: HtmlReportInput, executionDate = new D
       border: 1px solid var(--border);
     }
 
-    .quality-gate-warning {
+    .quality-gate-warning,
+    .comparison-scope-warning {
       margin: 14px 0 0;
       color: var(--fail-text);
       font-weight: 700;
+    }
+
+    .comparison-scope-warning {
+      margin: 0 0 14px;
+      border: 1px solid var(--fail-text);
+      border-radius: 8px;
+      background: var(--fail-background);
+      padding: 12px;
     }
 
     .metadata-badge,

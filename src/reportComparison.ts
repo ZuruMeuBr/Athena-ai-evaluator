@@ -32,22 +32,61 @@ export interface ComparisonSummary {
   improvementsCount: number;
   newScenariosCount: number;
   removedScenariosCount: number;
+  scopeDifferencesCount: number;
+}
+
+export interface ScopeDifferences {
+  currentOnlyScenarios: ScenarioComparisonItem[];
+  previousOnlyScenarios: ScenarioComparisonItem[];
 }
 
 export interface ExecutionComparisonReport {
   currentExecutionId: string;
   previousExecutionId: string;
+  sameScope: boolean;
+  message?: string;
   summary: ComparisonSummary;
   regressions: ScenarioComparisonItem[];
   improvements: ScenarioComparisonItem[];
   unchanged: ScenarioComparisonItem[];
   newScenarios: ScenarioComparisonItem[];
   removedScenarios: ScenarioComparisonItem[];
+  scopeDifferences: ScopeDifferences;
 }
 
 export interface CompareLatestWithPreviousResult {
   comparison: ExecutionComparisonReport | null;
   comparisonPath: string;
+}
+
+export const differentScopeComparisonMessage =
+  "Executions have different scopes. New and removed scenarios may reflect filter differences, not actual scenario changes.";
+
+type AppliedFilters = ExecutionReportPayload["appliedFilters"];
+
+function normalizeAppliedFilters(filters: AppliedFilters | undefined): Record<string, string[]> {
+  const normalizedEntries = Object.entries(filters ?? {})
+    .map(([key, value]) => {
+      const values = (Array.isArray(value) ? value : [value])
+        .map((item) => item.trim().toLowerCase())
+        .filter((item) => item.length > 0);
+
+      return [key.trim().toLowerCase(), [...new Set(values)].sort()] as const;
+    })
+    .filter(([key, values]) => key.length > 0 && values.length > 0)
+    .sort(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey));
+
+  return Object.fromEntries(normalizedEntries);
+}
+
+export function haveSameExecutionScope(
+  currentFilters: AppliedFilters | undefined,
+  previousFilters: AppliedFilters | undefined
+): boolean {
+  return (
+    JSON.stringify(normalizeAppliedFilters(currentFilters)) ===
+    JSON.stringify(normalizeAppliedFilters(previousFilters))
+  );
 }
 
 function statusRank(status: EvaluationStatus): number {
@@ -132,6 +171,24 @@ function removedScenarioItem(previous: EvaluationResult): ScenarioComparisonItem
   };
 }
 
+function currentScopeOnlyItem(current: EvaluationResult): ScenarioComparisonItem {
+  return {
+    ...scenarioLabel(current),
+    currentStatus: current.overallStatus,
+    currentScorePercent: current.scorePercent,
+    changeType: "CURRENT_SCOPE_ONLY"
+  };
+}
+
+function previousScopeOnlyItem(previous: EvaluationResult): ScenarioComparisonItem {
+  return {
+    ...scenarioLabel(previous),
+    previousStatus: previous.overallStatus,
+    previousScorePercent: previous.scorePercent,
+    changeType: "PREVIOUS_SCOPE_ONLY"
+  };
+}
+
 async function readJson<T>(filePath: string): Promise<T> {
   const content = await readFile(filePath, "utf8");
 
@@ -147,6 +204,7 @@ export function compareExecutionReports(
   currentReport: ExecutionReportPayload,
   previousReport: ExecutionReportPayload
 ): ExecutionComparisonReport {
+  const sameScope = haveSameExecutionScope(currentReport.appliedFilters, previousReport.appliedFilters);
   const previousById = new Map(previousReport.results.map((result) => [result.id, result]));
   const currentById = new Map(currentReport.results.map((result) => [result.id, result]));
   const regressions: ScenarioComparisonItem[] = [];
@@ -154,12 +212,20 @@ export function compareExecutionReports(
   const unchanged: ScenarioComparisonItem[] = [];
   const newScenarios: ScenarioComparisonItem[] = [];
   const removedScenarios: ScenarioComparisonItem[] = [];
+  const scopeDifferences: ScopeDifferences = {
+    currentOnlyScenarios: [],
+    previousOnlyScenarios: []
+  };
 
   for (const current of currentReport.results) {
     const previous = previousById.get(current.id);
 
     if (previous === undefined) {
-      newScenarios.push(newScenarioItem(current));
+      if (sameScope) {
+        newScenarios.push(newScenarioItem(current));
+      } else {
+        scopeDifferences.currentOnlyScenarios.push(currentScopeOnlyItem(current));
+      }
       continue;
     }
 
@@ -176,13 +242,19 @@ export function compareExecutionReports(
 
   for (const previous of previousReport.results) {
     if (!currentById.has(previous.id)) {
-      removedScenarios.push(removedScenarioItem(previous));
+      if (sameScope) {
+        removedScenarios.push(removedScenarioItem(previous));
+      } else {
+        scopeDifferences.previousOnlyScenarios.push(previousScopeOnlyItem(previous));
+      }
     }
   }
 
   return {
     currentExecutionId: currentReport.executionId,
     previousExecutionId: previousReport.executionId,
+    sameScope,
+    ...(sameScope ? {} : { message: differentScopeComparisonMessage }),
     summary: {
       currentSuccessRate: currentReport.summary.successRate,
       previousSuccessRate: previousReport.summary.successRate,
@@ -199,13 +271,16 @@ export function compareExecutionReports(
       regressionsCount: regressions.length,
       improvementsCount: improvements.length,
       newScenariosCount: newScenarios.length,
-      removedScenariosCount: removedScenarios.length
+      removedScenariosCount: removedScenarios.length,
+      scopeDifferencesCount:
+        scopeDifferences.currentOnlyScenarios.length + scopeDifferences.previousOnlyScenarios.length
     },
     regressions,
     improvements,
     unchanged,
     newScenarios,
-    removedScenarios
+    removedScenarios,
+    scopeDifferences
   };
 }
 

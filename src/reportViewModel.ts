@@ -103,6 +103,8 @@ export interface ComparisonMetricViewModel {
 export interface ComparisonViewModel {
   available: boolean;
   message: string;
+  sameScope: boolean;
+  scopeWarning: string | null;
   currentExecutionId: string;
   previousExecutionId: string;
   metrics: ComparisonMetricViewModel[];
@@ -586,6 +588,8 @@ function buildComparison(comparison: unknown): ComparisonViewModel {
   const fallback: ComparisonViewModel = {
     available: false,
     message: reportLabels.noPreviousExecution,
+    sameScope: true,
+    scopeWarning: null,
     currentExecutionId: fallbackValue,
     previousExecutionId: fallbackValue,
     metrics: []
@@ -614,10 +618,14 @@ function buildComparison(comparison: unknown): ComparisonViewModel {
   const improvementsCount = Math.max(0, safeNumber(summary.improvementsCount));
   const newScenariosCount = Math.max(0, safeNumber(summary.newScenariosCount));
   const removedScenariosCount = Math.max(0, safeNumber(summary.removedScenariosCount));
+  const scopeDifferencesCount = Math.max(0, safeNumber(summary.scopeDifferencesCount));
+  const sameScope = typedComparison.sameScope !== false;
 
   return {
     available: true,
     message: `Compared with ${previousExecutionId}.`,
+    sameScope,
+    scopeWarning: sameScope ? null : reportLabels.differentScopeWarning,
     currentExecutionId,
     previousExecutionId,
     metrics: [
@@ -630,7 +638,8 @@ function buildComparison(comparison: unknown): ComparisonViewModel {
       { label: reportLabels.regressions, value: formatNumber(regressionsCount) },
       { label: reportLabels.improvements, value: formatNumber(improvementsCount) },
       { label: reportLabels.newScenarios, value: formatNumber(newScenariosCount) },
-      { label: reportLabels.removedScenarios, value: formatNumber(removedScenariosCount) }
+      { label: reportLabels.removedScenarios, value: formatNumber(removedScenariosCount) },
+      { label: reportLabels.scopeDifferences, value: formatNumber(scopeDifferencesCount) }
     ]
   };
 }

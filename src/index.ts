@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import { loadAppConfig } from "./config/env";
 import { createProvider } from "./config/providerFactory";
+import { printComparisonSummary } from "./comparisonConsoleReporter";
 import { printResults } from "./consoleReporter";
 import { evaluateScenarios } from "./evaluator";
 import { loadPromptScenarios } from "./promptLoader";
@@ -11,7 +12,7 @@ import {
   parseQualityGateArgs,
   printQualityGateResult
 } from "./qualityGate";
-import { compareLatestWithPrevious, type ExecutionComparisonReport } from "./reportComparison";
+import { compareLatestWithPrevious } from "./reportComparison";
 import {
   refreshExecutionHtmlReports,
   writeExecutionQualityGate,
@@ -39,26 +40,6 @@ function printGeneratedReports(paths: {
   console.log(`Latest HTML: ${paths.latestHtmlPath}`);
   console.log(`History JSON: ${paths.historyJsonPath}`);
   console.log(`History HTML: ${paths.historyHtmlPath}`);
-}
-
-function formatDelta(value: number, suffix = ""): string {
-  const sign = value > 0 ? "+" : "";
-
-  return `${sign}${value}${suffix}`;
-}
-
-function printComparisonSummary(comparison: ExecutionComparisonReport): void {
-  console.log("Comparison with previous execution:");
-  console.log(
-    `Success Rate: ${comparison.summary.previousSuccessRate}% -> ${comparison.summary.currentSuccessRate}% (${formatDelta(
-      comparison.summary.successRateDelta,
-      "%"
-    )})`
-  );
-  console.log(`Regressions: ${comparison.summary.regressionsCount}`);
-  console.log(`Improvements: ${comparison.summary.improvementsCount}`);
-  console.log(`New scenarios: ${comparison.summary.newScenariosCount}`);
-  console.log(`Removed scenarios: ${comparison.summary.removedScenariosCount}`);
 }
 
 async function main(): Promise<void> {

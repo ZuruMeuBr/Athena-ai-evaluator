@@ -195,6 +195,51 @@ describe("reportWriter", () => {
     }
   });
 
+  it("preserves UTF-8 accented characters in report.json", async () => {
+    const dir = createTempDir();
+    const accentedText = "cenário veículo revisão não ação São Paulo João ç á é í ó ú";
+
+    try {
+      await writeExecutionReports({
+        reportsRootPath: join(dir, "reports"),
+        results: [
+          {
+            ...result,
+            title: `Agendamento - cenário positivo 1`,
+            description: accentedText,
+            prompt: accentedText,
+            actualResponse: accentedText,
+            expected: "revisão",
+            intent: "Ação",
+            entity: "São Paulo",
+            author: "João"
+          }
+        ],
+        appliedFilters: {},
+        executionDate: new Date(2026, 5, 25, 14, 5, 22),
+        durationMs: 300
+      });
+
+      const rawReport = readFileSync(join(dir, "reports", "latest", "report.json"), "utf8");
+      const report = JSON.parse(rawReport) as { results: Array<Record<string, unknown>> };
+
+      expect(report.results[0]).toMatchObject({
+        title: "Agendamento - cenário positivo 1",
+        description: accentedText,
+        prompt: accentedText,
+        actualResponse: accentedText,
+        expected: "revisão",
+        intent: "Ação",
+        entity: "São Paulo",
+        author: "João"
+      });
+      expect(rawReport).toContain(accentedText);
+      expect(rawReport).not.toContain("cenÃ¡rio");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("adds Quality Gate data to latest, history and legacy report.json", async () => {
     const dir = createTempDir();
     const reportsRootPath = join(dir, "reports");
@@ -264,6 +309,7 @@ describe("reportWriter", () => {
         comparison: {
           currentExecutionId: "2026-06-25_14-05-22",
           previousExecutionId: "2026-06-25_13-30-10",
+          sameScope: true,
           summary: {
             currentSuccessRate: 100,
             previousSuccessRate: 80,
@@ -280,13 +326,18 @@ describe("reportWriter", () => {
             regressionsCount: 0,
             improvementsCount: 1,
             newScenariosCount: 0,
-            removedScenariosCount: 0
+            removedScenariosCount: 0,
+            scopeDifferencesCount: 0
           },
           regressions: [],
           improvements: [],
           unchanged: [],
           newScenarios: [],
-          removedScenarios: []
+          removedScenarios: [],
+          scopeDifferences: {
+            currentOnlyScenarios: [],
+            previousOnlyScenarios: []
+          }
         }
       });
 

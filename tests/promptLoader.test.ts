@@ -8,6 +8,47 @@ function createTempDir(): string {
 }
 
 describe("loadPromptScenarios", () => {
+  it("preserves UTF-8 accented characters when reading JSON with BOM", async () => {
+    const dir = createTempDir();
+    const accentedText = "cenário veículo revisão não ação São Paulo João ç á é í ó ú";
+
+    try {
+      const promptsPath = join(dir, "prompts.json");
+      writeFileSync(
+        promptsPath,
+        `\uFEFF${JSON.stringify([
+          {
+            id: "utf8-001",
+            categoria: "Revisão",
+            prompt: accentedText,
+            response: accentedText,
+            expected: "cenário",
+            intent: "Revisão",
+            entity: "São Paulo",
+            title: `Teste UTF-8 - ${accentedText}`,
+            author: "João"
+          }
+        ])}`,
+        "utf8"
+      );
+
+      const scenarios = await loadPromptScenarios(promptsPath);
+
+      expect(scenarios[0]).toMatchObject({
+        categoria: "Revisão",
+        prompt: accentedText,
+        response: accentedText,
+        expected: "cenário",
+        intent: "Revisão",
+        entity: "São Paulo",
+        author: "João"
+      });
+      expect(JSON.stringify(scenarios)).not.toContain("cenÃ¡rio");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("normalizes comma-separated tags before validating scenarios", async () => {
     const dir = createTempDir();
 

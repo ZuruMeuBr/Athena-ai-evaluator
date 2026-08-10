@@ -85,6 +85,7 @@ function comparison(overrides: Partial<ExecutionComparisonReport> = {}): Executi
   return {
     currentExecutionId: "current",
     previousExecutionId: "previous",
+    sameScope: true,
     summary: {
       currentSuccessRate: 60,
       previousSuccessRate: 80,
@@ -101,13 +102,18 @@ function comparison(overrides: Partial<ExecutionComparisonReport> = {}): Executi
       regressionsCount: 3,
       improvementsCount: 2,
       newScenariosCount: 1,
-      removedScenariosCount: 0
+      removedScenariosCount: 0,
+      scopeDifferencesCount: 0
     },
     regressions: [],
     improvements: [],
     unchanged: [],
     newScenarios: [],
     removedScenarios: [],
+    scopeDifferences: {
+      currentOnlyScenarios: [],
+      previousOnlyScenarios: []
+    },
     ...overrides
   };
 }
@@ -138,6 +144,7 @@ describe("generateHtmlReport", () => {
     const html = generateHtmlReport(results, new Date(2026, 5, 17, 12, 30, 0));
 
     expect(html).toContain("<title>LLM Evaluator Report</title>");
+    expect(html).toContain('<meta charset="utf-8">');
     expect(html).toContain("<h1>LLM Evaluator Report</h1>");
     expect(html).toContain("Execution Date: 17/06/2026 12:30:00");
     expect(html).toContain("Filters: None");
@@ -179,6 +186,30 @@ describe("generateHtmlReport", () => {
     expect(html).toContain("priority=Critical");
     expect(html).toContain("Execution Duration");
     expect(html).toContain("245 ms");
+  });
+
+  it("preserves UTF-8 accented characters in the final HTML", () => {
+    const accentedText = "cenário veículo revisão não ação São Paulo João ç á é í ó ú";
+    const html = generateHtmlReport(
+      [
+        {
+          ...results[0],
+          title: "Agendamento - cenário positivo 1",
+          description: accentedText,
+          prompt: accentedText,
+          actualResponse: accentedText,
+          expected: "revisão",
+          intent: "Ação",
+          entity: "São Paulo",
+          author: "João"
+        }
+      ],
+      new Date(2026, 5, 17, 12, 30, 0)
+    );
+
+    expect(html).toContain("Agendamento - cenário positivo 1");
+    expect(html).toContain(accentedText);
+    expect(html).not.toContain("cenÃ¡rio");
   });
 
   it("renders a disabled Quality Gate section when the gate was not requested", () => {
@@ -233,6 +264,17 @@ describe("generateHtmlReport", () => {
     expect(html).toContain("Improvements");
     expect(html).toContain("New Scenarios");
     expect(html).toContain("Removed Scenarios");
+  });
+
+  it("renders a visual warning when comparison scopes differ", () => {
+    const html = generateHtmlReport(reportPayload(), new Date(2026, 5, 17, 12, 30, 0), {
+      comparison: comparison({ sameScope: false })
+    });
+
+    expect(html).toContain('class="comparison-scope-warning"');
+    expect(html).toContain(
+      "Executions have different scopes. New/removed scenarios may reflect filter differences."
+    );
   });
 
   it("renders friendly comparison message when comparison is absent", () => {
