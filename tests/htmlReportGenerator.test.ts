@@ -1,4 +1,5 @@
 import { generateHtmlReport } from "../src/report/htmlReportGenerator";
+import { formatDateTime } from "../src/report/reportFormatters";
 import { defaultQualityGateCriteria, evaluateQualityGate } from "../src/qualityGate";
 import type { ExecutionComparisonReport } from "../src/reportComparison";
 import type { ExecutionHistoryEntry, ExecutionReportPayload } from "../src/reportWriter";
@@ -140,13 +141,16 @@ function historyEntry(overrides: Partial<ExecutionHistoryEntry> = {}): Execution
 }
 
 describe("generateHtmlReport", () => {
-  it("renders the dashboard shell", () => {
-    const html = generateHtmlReport(results, new Date(2026, 5, 17, 12, 30, 0));
+  it("renders the dashboard shell with a deterministic execution date", () => {
+    const executionDate = new Date("2026-06-17T15:30:00.000Z");
+    const expectedExecutionDate = formatDateTime(executionDate);
+    const html = generateHtmlReport(results, executionDate);
 
+    expect(expectedExecutionDate).toBe("17/06/2026 12:30:00");
     expect(html).toContain("<title>LLM Evaluator Report</title>");
     expect(html).toContain('<meta charset="utf-8">');
     expect(html).toContain("<h1>LLM Evaluator Report</h1>");
-    expect(html).toContain("Execution Date: 17/06/2026 12:30:00");
+    expect(html).toContain(`Execution Date: ${expectedExecutionDate}`);
     expect(html).toContain("Filters: None");
     expect(html).toContain("https://cdn.jsdelivr.net/npm/chart.js");
     expect(html).toContain('id="themeToggle"');
