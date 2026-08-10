@@ -3,9 +3,25 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { loadAppConfig } from "../src/config/env";
 
-const originalEnv = { ...process.env };
+const configEnvironmentVariables = [
+  "PROVIDER",
+  "GEMINI_API_KEY",
+  "GEMINI_MODEL",
+  "GEMINI_TIMEOUT_MS",
+  "STRICT_MOCK_RESPONSE_VALIDATION"
+] as const;
+
+let originalEnv: NodeJS.ProcessEnv;
 
 describe("loadAppConfig", () => {
+  beforeEach(() => {
+    originalEnv = { ...process.env };
+
+    for (const variableName of configEnvironmentVariables) {
+      delete process.env[variableName];
+    }
+  });
+
   afterEach(() => {
     process.env = { ...originalEnv };
   });
